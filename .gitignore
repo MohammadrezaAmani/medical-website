@@ -3,3 +3,4 @@ ThritaTech-Final/
 .env
 *.sqlite3
 *initial.py
+00*

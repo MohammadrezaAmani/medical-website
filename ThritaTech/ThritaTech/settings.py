@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "userpanel",
     "reports",
     "Message",
-    "django.contrib.sites",
     "rest_framework",
     "rest_framework.authtoken",
 ]
