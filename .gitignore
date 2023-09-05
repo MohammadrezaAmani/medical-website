@@ -1,0 +1,5 @@
+ThritaTech-Final/
+py[cod]
+.env
+*.sqlite3
+*initial.py
