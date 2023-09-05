@@ -38,7 +38,8 @@ class DoctorUser(AbstractBaseUser, PermissionsMixin):
         ("m", "Male"),
         ("f", "female"),
     )
-    gender = models.CharField(max_length=1, choices=Gender_Chocies, default="m")
+    gender = models.CharField(
+        max_length=1, choices=Gender_Chocies, default="m")
     id = models.AutoField(primary_key=True)
     birth_date = models.DateField(null=True, blank=True)
     address = models.CharField(max_length=100, blank=True)
@@ -71,7 +72,8 @@ class PatientUser(AbstractBaseUser, PermissionsMixin):
         ("m", "Male"),
         ("f", "female"),
     )
-    gender = models.CharField(max_length=1, choices=Gender_Chocies, default="m")
+    gender = models.CharField(
+        max_length=1, choices=Gender_Chocies, default="m")
     id = models.AutoField(primary_key=True)
     birth_date = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True)
@@ -93,7 +95,8 @@ class PatientUser(AbstractBaseUser, PermissionsMixin):
 class Injuries(models.Model):
     injury_name = models.CharField(max_length=30)
     injury_description = models.CharField(max_length=1000)
-    injury_image = models.ImageField(upload_to="injury_images/", null=True, blank=True)
+    injury_image = models.ImageField(
+        upload_to="injury_images/", null=True, blank=True)
 
     def __str__(self):
         return self.injury_name
