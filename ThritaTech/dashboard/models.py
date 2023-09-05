@@ -50,9 +50,10 @@ class Calendar(models.Model):
     def __str__(self) -> str:
         # show the owner's username and number of items
         return f"{self.owner.username} ({self.calendaritem_set.count()})"
+
     def __repr__(self) -> str:
         return self.__str__()
-    
+
     def get_items(self, now=None):
         if now is None:
             now = timezone.now()
