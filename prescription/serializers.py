@@ -1,12 +1,6 @@
 from rest_framework import serializers
 from .models import Prescription, Drug
-from exercise.models import Exercise
-
-
-class ExerciseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Exercise
-        fields = "__all__"
+from exercise.serializers import ExerciseSerializer
 
 
 class DrugSerializer(serializers.ModelSerializer):
