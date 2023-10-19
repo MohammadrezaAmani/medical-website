@@ -17,7 +17,6 @@ class Doctor(models.Model):
     medical_system_code = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=10)
-    # user = models.OneToOneField(User,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
