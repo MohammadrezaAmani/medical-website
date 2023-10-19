@@ -21,7 +21,7 @@ class Patient(models.Model):
     injury_description = models.CharField(max_length=100)
     injury_type = models.CharField(max_length=100)
     medical_documents = models.FileField(upload_to="documents/", null=True, blank=True)
-
+    password = models.CharField(max_length=100)
     def __str__(self):
         return self.name
 
