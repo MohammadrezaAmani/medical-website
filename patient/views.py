@@ -4,6 +4,7 @@ from .serializers import PatientSerializer
 from rest_framework.response import Response
 from session.serializers import SessionSerializer
 
+
 class PatientListCreateView(generics.ListCreateAPIView):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
@@ -12,6 +13,7 @@ class PatientListCreateView(generics.ListCreateAPIView):
 class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
+
 
 class PatientSessions(generics.RetrieveAPIView):
     queryset = Patient.objects.all()

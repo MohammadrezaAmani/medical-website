@@ -19,6 +19,6 @@ class Session(models.Model):
     status = models.CharField(max_length=1, choices=SESSION_OPTION)
     rate = models.IntegerField()
     description = models.TextField(blank=True, null=True)
-    
+
     def get_absolute_url(self):
         return reverse("Session_detail", kwargs={"pk": self.pk})
