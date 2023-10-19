@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 from doctor.models import Doctor
 
-# Create your models here.
 
 
 class Patient(models.Model):
