@@ -3,7 +3,6 @@ from django.urls import reverse
 from doctor.models import Doctor
 
 
-
 class Patient(models.Model):
     GENDER_OPTIONS = (("m", "male"), ("f", "female"))
     name = models.CharField(max_length=100)
@@ -22,6 +21,7 @@ class Patient(models.Model):
     injury_type = models.CharField(max_length=100)
     medical_documents = models.FileField(upload_to="documents/", null=True, blank=True)
     password = models.CharField(max_length=100)
+
     def __str__(self):
         return self.name
 
