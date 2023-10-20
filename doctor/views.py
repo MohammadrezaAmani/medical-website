@@ -11,6 +11,7 @@ from exercise.serializers import ExerciseSerializer
 from patient.serializers import PatientSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
+from session.models import Session
 from .serializers import DoctorLoginSerializer, DoctorSerializer
 from .models import Doctor
 
@@ -127,7 +128,7 @@ class DoctorPatients(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
-            patients = doctor.patient_set.all()
+            patients = doctor.patients.all()
             serializer = PatientSerializer(patients, many=True)
             return Response(serializer.data)
         else:
@@ -141,7 +142,7 @@ class DoctorSessions(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
-            sessions = doctor.session_set.all()
+            sessions = Session.objects.filter(patient__doctor=doctor)
             serializer = SessionSerializer(sessions, many=True)
             return Response(serializer.data)
         else:
