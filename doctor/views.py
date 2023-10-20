@@ -9,9 +9,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from exercise.serializers import ExerciseSerializer
 from patient.serializers import PatientSerializer
+from patient.models import Patient
 from session.serializers import SessionSerializer
 from .serializers import DoctorLoginSerializer, DoctorSerializer
-from .models import Doctor, Patient
+from .models import Doctor
 
 
 def get_user_from_token(request):
