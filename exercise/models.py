@@ -3,8 +3,7 @@ from django.urls import reverse
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -14,8 +13,7 @@ class Equipment(models.Model):
 
 
 class Goal(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -25,8 +23,7 @@ class Goal(models.Model):
 
 
 class Displacement(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -36,8 +33,7 @@ class Displacement(models.Model):
 
 
 class PlacementPosition(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -47,8 +43,7 @@ class PlacementPosition(models.Model):
 
 
 class Target(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -58,8 +53,7 @@ class Target(models.Model):
 
 
 class Organ(models.Model):
-    name = models.CharField(max_length=100)
-    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
     photo = models.ImageField(upload_to="images/", null=True, blank=True)
     description = models.TextField(blank=True, null=True)
 
@@ -72,17 +66,16 @@ class Organ(models.Model):
 
 class Exercise(models.Model):
     owner = models.ForeignKey("doctor.Doctor", on_delete=models.CASCADE)
-    id = models.AutoField(primary_key=True)
     video = models.FileField(upload_to="videos/", null=True, blank=True)
     photo = models.ImageField(upload_to="images/", null=True, blank=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
-    placement_position = models.ManyToManyField("PlacementPosition", blank=True)
-    target = models.ManyToManyField("Target", blank=True)
-    target_organs = models.ManyToManyField("Organ", blank=True)
-    displacement = models.ManyToManyField("Displacement", blank=True)
+    placement_position = models.ManyToManyField(PlacementPosition, blank=True)
+    target = models.ManyToManyField(Target, blank=True)
+    target_organs = models.ManyToManyField(Organ, blank=True)
+    displacement = models.ManyToManyField(Displacement, blank=True)
     instructions = models.TextField(blank=True, null=True)
-    accessories = models.ManyToManyField("Equipment", blank=True)
+    accessories = models.ManyToManyField(Equipment, blank=True)
     is_public = models.BooleanField(default=False)
     keywords = models.TextField(blank=True, null=True)
 
