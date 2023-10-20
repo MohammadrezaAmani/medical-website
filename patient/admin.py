@@ -50,7 +50,6 @@ class PatientAdmin(admin.ModelAdmin):
         ("Medical Documents", {"fields": ("medical_documents",)}),
         ("Status", {"fields": ("is_active", "is_doctor", "is_patient")}),
     )
-    readonly_fields = ("created_at", "updated_at")
 
     def get_user_full_name(self, obj):
         return obj.user.get_full_name()
