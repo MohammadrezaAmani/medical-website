@@ -22,3 +22,6 @@ class Session(models.Model):
 
     def get_absolute_url(self):
         return reverse("Session_detail", kwargs={"pk": self.pk})
+
+    def doctor(self):
+        return self.patient.doctor

@@ -1,30 +1,56 @@
+import jwt
 from django.conf import settings
 from django.http import JsonResponse
-from rest_framework import status
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate, login
-import jwt
 from exercise.serializers import ExerciseSerializer
 from patient.serializers import PatientSerializer
 from session.serializers import SessionSerializer
 from .serializers import DoctorLoginSerializer, DoctorSerializer
 from .models import Doctor, Patient
-from rest_framework import generics
-from django.contrib.auth.models import User
+
+
+def get_user_from_token(request):
+    token = request.META.get("HTTP_AUTHORIZATION")
+    if token:
+        try:
+            token = token.replace("Bearer ", "")
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            try:
+                user = User.objects.get(id=user_id)
+                return user
+            except User.DoesNotExist:
+                return None
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({"error": "Token has expired"}, status=401)
+        except jwt.DecodeError:
+            return JsonResponse({"error": "Invalid token"}, status=401)
+    else:
+        return JsonResponse({"error": "Token not provided"}, status=401)
 
 
 def get_doctor_from_token(request):
-    user = get_user_from_token(request)
-    doctor = Doctor.objects.get(user=user)
-    return doctor
+    try:
+        user = get_user_from_token(request)
+        doctor = Doctor.objects.get(user=user)
+        print(doctor)
+        return doctor
+    except Doctor.DoesNotExist:
+        return None
 
 
 def get_patient_from_token(request):
-    user = get_user_from_token(request)
-    patient = Patient.objects.get(user=user)
-    return patient
+    try:
+        user = get_user_from_token(request)
+        patient = Patient.objects.get(user=user)
+        return patient
+    except Patient.DoesNotExist:
+        return None
 
 
 class DoctorLoginView(APIView):
@@ -119,27 +145,6 @@ class DoctorSessions(generics.RetrieveAPIView):
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
-
-
-def get_user_from_token(request):
-    token = request.META.get("HTTP_AUTHORIZATION")
-
-    if token:
-        try:
-            token = token.replace("Bearer ", "")
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user_id = payload.get("user_id")
-            try:
-                user = User.objects.get(id=user_id)
-                return user
-            except User.DoesNotExist:
-                return None
-        except jwt.ExpiredSignatureError:
-            return JsonResponse({"error": "Token has expired"}, status=401)
-        except jwt.DecodeError:
-            return JsonResponse({"error": "Invalid token"}, status=401)
-    else:
-        return JsonResponse({"error": "Token not provided"}, status=401)
 
 
 class DoctorMe(APIView):
