@@ -4,6 +4,20 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+# jwt
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    path("auth/", include("rest_framework.urls")),
+    # jwt
+    path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+]
+
+
 urlpatterns = []
 
 
@@ -20,7 +34,7 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-urlpatterns = [
+urlpatterns += [
     path("admin/", admin.site.urls),
     path("doctor/", include("doctor.urls")),
     path("exercise/", include("exercise.urls")),

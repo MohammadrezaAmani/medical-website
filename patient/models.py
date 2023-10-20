@@ -4,6 +4,7 @@ from doctor.models import Doctor
 
 
 class Patient(models.Model):
+    # user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, primary_key=True)
     GENDER_OPTIONS = (("m", "male"), ("f", "female"))
     name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
