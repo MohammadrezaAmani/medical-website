@@ -21,6 +21,8 @@ class Doctor(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=True)
+
     def __str__(self):
         return self.name
 
@@ -48,6 +50,7 @@ class Patient(models.Model):
     injury_type = models.CharField(max_length=100)
     medical_documents = models.FileField(upload_to="documents/", null=True, blank=True)
     is_active = models.BooleanField(default=False)
+    is_doctor = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

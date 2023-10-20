@@ -6,3 +6,10 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = "__all__"
+
+
+# class DoctorLoginSerializer(serializers.
+# just get email and password, with no model
+class DoctorLoginSerializer(serializers.Serializer):
+    username = serializers.EmailField(max_length=100)
+    password = serializers.CharField(max_length=100)

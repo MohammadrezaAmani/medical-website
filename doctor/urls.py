@@ -1,23 +1,23 @@
 from django.urls import path
-from .views import (
-    DoctorDetailView,
-    # DoctorExercises,
-    # DoctorPatients,
-    # DoctorSessions,
-)
+from . import views
 
 urlpatterns = [
-    path("", DoctorDetailView.as_view(), name="doctor-detail"),
-    # path("exercises/", DoctorExercises.as_view(), name="doctor-exercises"),
-    # path("patients/", DoctorPatients.as_view(), name="doctor-patients"),
-    # path("sessions/", DoctorSessions.as_view(), name="doctor-sessions"),
-]
-
-# urls.py in doctor app
-from django.urls import path
-from doctor.views import DoctorLoginView
-
-urlpatterns += [
-    # ... other URLs
-    path("doctor-login/", DoctorLoginView.as_view(), name="doctor-login"),
+    path("doctors/<int:pk>/", views.DoctorDetailView.as_view(), name="doctor-detail"),
+    path(
+        "doctors/<int:pk>/exercises/",
+        views.DoctorExercises.as_view(),
+        name="doctor-exercises",
+    ),
+    path(
+        "doctors/<int:pk>/patients/",
+        views.DoctorPatients.as_view(),
+        name="doctor-patients",
+    ),
+    path(
+        "doctors/<int:pk>/sessions/",
+        views.DoctorSessions.as_view(),
+        name="doctor-sessions",
+    ),
+    path("login/", views.DoctorLoginView.as_view(), name="doctor-login"),
+    path("me/", views.DoctorMe.as_view(), name="doctor-me"),
 ]
