@@ -153,6 +153,7 @@ def patient_profile(request):
             {"message": "Profile deleted successfully."}, status=status.HTTP_200_OK
         )
 
+
 class PatientDoctorView(APIView):
     def get(self, request):
         patient = get_patient_from_token(request)
