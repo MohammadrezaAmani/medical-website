@@ -9,7 +9,9 @@
 urlpatterns = [
     #     # Prescription URLs
     #     path(
-    #         "prescriptions/", PrescriptionListCreateView.as_view(), name="prescription-list"
+    #         "prescriptions/",
+    # PrescriptionListCreateView.as_view(),
+    # name="prescription-list"
     #     ),
     #     path(
     #         "prescriptions/<int:pk>/",

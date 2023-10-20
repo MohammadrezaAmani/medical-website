@@ -1,8 +1,12 @@
+from django.contrib.auth import authenticate
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from session.serializers import SessionSerializer
 from .models import Patient
 from .serializers import PatientSerializer
-from rest_framework.response import Response
-from session.serializers import SessionSerializer
 
 
 class PatientListCreateView(generics.ListCreateAPIView):
@@ -24,14 +28,6 @@ class PatientSessions(generics.RetrieveAPIView):
         sessions = patient.session_set.all()
         serializer = SessionSerializer(sessions, many=True)
         return Response(serializer.data)
-
-
-# views.py in patient app
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
 
 
 class PatientLoginView(APIView):
