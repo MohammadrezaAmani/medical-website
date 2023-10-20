@@ -1,12 +1,20 @@
 from django.urls import path
-from .views import PatientListCreateView, PatientDetailView, PatientLoginView
+from . import views
 
 urlpatterns = [
-    path("patients/", PatientListCreateView.as_view(), name="patient-list"),
-    path("patients/<int:pk>/", PatientDetailView.as_view(), name="patient-detail"),
-]
+    path(
+        "patient/exercises/",
+        views.PatientExercises.as_view(),
+        name="patient-exercises",
+    ),
+    path(
+        "patient/sessions/",
+        views.PatientSessions.as_view(),
+        name="patient-sessions",
+    ),
+    path("login/", views.PatientLoginView.as_view(), name="patient-login"),
+    # path("me/", views.PatientMe.as_view(), name="patient-me"),
+    # pk
+    path('patient/profile/', views.patient_profile, name='patient-profile'),
 
-urlpatterns += [
-    # ... other URLs
-    path("api/patient-login/", PatientLoginView.as_view(), name="patient-login"),
 ]

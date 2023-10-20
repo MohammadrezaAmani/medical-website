@@ -28,6 +28,7 @@ class Patient(models.Model):
     medical_documents = models.FileField(upload_to="documents/", null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_doctor = models.BooleanField(default=False)
+    is_patient = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

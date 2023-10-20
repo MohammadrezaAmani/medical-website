@@ -1,13 +1,17 @@
 import jwt
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+#pagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from exercise.serializers import ExerciseSerializer
+from exercise.models import Exercise
 from patient.serializers import PatientSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
@@ -17,7 +21,7 @@ from .models import Doctor
 
 
 def get_user_from_token(request):
-    token = request.META.get("HTTP_AUTHORIZATION")
+    token = request.headers.get("Authorization")
     if token:
         try:
             token = token.replace("Bearer ", "")
@@ -39,9 +43,12 @@ def get_user_from_token(request):
 def get_doctor_from_token(request):
     try:
         user = get_user_from_token(request)
-        doctor = Doctor.objects.get(user=user)
-        print(doctor)
-        return doctor
+        if isinstance(user, User):
+            doctor = Doctor.objects.get(user=user)
+            print(doctor)
+            return doctor
+        else:
+            return user
     except Doctor.DoesNotExist:
         return None
 
@@ -49,15 +56,18 @@ def get_doctor_from_token(request):
 def get_patient_from_token(request):
     try:
         user = get_user_from_token(request)
-        patient = Patient.objects.get(user=user)
-        return patient
+        if isinstance(user, User):
+            patient = Patient.objects.get(user=user)
+            return patient
+        else:
+            return user
     except Patient.DoesNotExist:
         return None
 
 
 class DoctorLoginView(APIView):
     serializer_class = DoctorLoginSerializer
-
+    pagination_class = PageNumberPagination
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
@@ -94,39 +104,46 @@ class DoctorLoginView(APIView):
             )
 
 
-class DoctorDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
+@api_view(["GET", "PATCH", "POST", "DELETE"])
+def doctor_profile(request):
+    doctor = get_doctor_from_token(request)
+    if isinstance(doctor, Doctor) is False:
+        return doctor
 
-    def get(self, request, *args, **kwargs):
-        doctor = get_doctor_from_token(request)
-        if isinstance(doctor, Doctor):
-            serializer = DoctorSerializer(doctor)
+    if request.method == "GET":
+        serializer = DoctorSerializer(doctor)
+        return Response(serializer.data)
+
+    if request.method == "POST":
+        serializer = DoctorSerializer(doctor, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data)
-        else:
-            return Response({"error": "permission denied"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    if request.method == "PATCH":
+        return Response(
+            {"error": "Use POST method to update your profile."},
+            status=status.HTTP_METHOD_NOT_ALLOWED,
+        )
 
-class DoctorExercises(generics.RetrieveAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
-
-    def get(self, request, *args, **kwargs):
-        doctor = get_doctor_from_token(request)
-        if isinstance(doctor, Doctor):
-            exercises = doctor.exercise_set.all()
-            serializer = ExerciseSerializer(exercises, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({"error": "permission denied"})
+    if request.method == "DELETE":
+        doctor.delete()
+        return Response(
+            {"message": "Profile deleted successfully."}, status=status.HTTP_200_OK
+        )
 
 
 class DoctorPatients(generics.RetrieveAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
+    pagination_class = PageNumberPagination
+
 
     def get(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
         if isinstance(doctor, Doctor):
             patients = doctor.patients.all()
             serializer = PatientSerializer(patients, many=True)
@@ -135,24 +152,132 @@ class DoctorPatients(generics.RetrieveAPIView):
             return Response({"error": "permission denied"})
 
 
-class DoctorSessions(generics.RetrieveAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
+class DoctorMe(APIView):
+    seializer_class = DoctorSerializer
+    def get(self, request):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        serializer = DoctorSerializer(doctor)
+        return Response(serializer.data)
 
+class AddSession(APIView):
+    serializer_class = SessionSerializer
+    def post(self, request):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            serializer = SessionSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+
+
+
+class DoctorSessions(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+    pagination_class = PageNumberPagination
+    
     def get(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
         if isinstance(doctor, Doctor):
             sessions = Session.objects.filter(patient__doctor=doctor)
             serializer = SessionSerializer(sessions, many=True)
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
-
-
-class DoctorMe(APIView):
-    seializer_class = DoctorSerializer
-
-    def get(self, request):
+    def patch(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
-        serializer = DoctorSerializer(doctor)
-        return Response(serializer.data)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            session = Session.objects.get(id=kwargs['pk'])
+            serializer = SessionSerializer(session, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+    def delete(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            session = Session.objects.get(id=kwargs['pk'])
+            session.delete()
+            return Response({"message": "Session deleted successfully."}, 
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "permission denied"})
+        
+    def get_object(self,request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            try:
+                return Session.objects.get(pk=kwargs['pk'])
+            except Session.DoesNotExist:
+                raise Http404
+        else:
+            return Response({"error": "permission denied"})
+        
+class DoctorExercises(generics.RetrieveUpdateDestroyAPIView):
+    pagination_class = PageNumberPagination
+    queryset = Exercise.objects.all()
+    serializer_class = ExerciseSerializer
+    def get(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            exercise = Exercise.objects.filter(patient__doctor=doctor)
+            serializer = ExerciseSerializer(exercise, many=True)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "permission denied"})
+    def patch(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            exercise = Exercise.objects.get(id=kwargs['pk'])
+            serializer = ExerciseSerializer(exercise, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+    def delete(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            exercise = Exercise.objects.get(id=kwargs['pk'])
+            exercise.delete()
+            return Response({"message": "exercise deleted successfully."}, 
+                            status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "permission denied"})
+        
+    def get_object(self,request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            try:
+                return Exercise.objects.get(pk=kwargs['pk'])
+            except Exercise.DoesNotExist:
+                raise Http404
+        else:
+            return Response({"error": "permission denied"})
+        
