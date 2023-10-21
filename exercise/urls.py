@@ -12,6 +12,7 @@ from .views import (
     TargetDetailView,
     OrganListCreateView,
     OrganDetailView,
+    ExerciseListView
 )
 
 urlpatterns = [
@@ -47,4 +48,6 @@ urlpatterns = [
     # Organ URLs
     path("organs/", OrganListCreateView.as_view(), name="organ-list"),
     path("organs/<int:pk>/", OrganDetailView.as_view(), name="organ-detail"),
+    # Exercise URLs
+    path("", ExerciseListView.as_view(), name="exercise-list"),
 ]
