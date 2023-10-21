@@ -15,7 +15,6 @@ from .serializers import (
     PlacementPositionSerializer,
     TargetSerializer,
     OrganSerializer,
-    ExerciseCreateSerializer,
     ExerciseSerializer,
 )
 from doctor.views import get_doctor_from_token
