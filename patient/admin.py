@@ -11,9 +11,8 @@ class PatientAdmin(admin.ModelAdmin):
         "doctor",
         "gender",
         "birth_date",
-        "is_active",
     )
-    list_filter = ("gender", "is_active")
+    list_filter = ("gender",)
     search_fields = ("name", "last_name", "insurance_number")
 
     fieldsets = (
@@ -46,7 +45,6 @@ class PatientAdmin(admin.ModelAdmin):
             },
         ),
         ("Medical Documents", {"fields": ("medical_documents",)}),
-        ("Status", {"fields": ("is_active", "is_doctor", "is_patient")}),
     )
 
     def get_user_full_name(self, obj):
