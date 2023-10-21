@@ -75,7 +75,7 @@ def doctor_profile(request):
     if request.method == "PATCH":
         return Response(
             {"error": "Use POST method to update your profile."},
-            status=status.HTTP_METHOD_NOT_ALLOWED,
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
     if request.method == "DELETE":
