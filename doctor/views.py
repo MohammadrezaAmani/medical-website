@@ -355,13 +355,16 @@ class AddExercise(APIView):
         else:
             return Response({"error": "permission denied"})
 
+
 class SessionDate(APIView):
     serializer_class = SessionSerializer
 
     def get(self, request, *args, **kwargs):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
-            sessions = Session.objects.filter(patient__doctor=doctor, date=kwargs["date"])
+            sessions = Session.objects.filter(
+                patient__doctor=doctor, date=kwargs["date"]
+            )
             serializer = SessionSerializer(sessions, many=True)
             return Response(serializer.data)
         else:
