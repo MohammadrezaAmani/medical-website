@@ -12,10 +12,9 @@ class DoctorAdmin(admin.ModelAdmin):
         "gender",
         "birth_date",
         "medical_system_code",
-        "is_active",
-        "is_doctor",
+
     )
-    list_filter = ("gender", "is_active", "is_doctor")
+    list_filter = ("gender", "birth_date")
     search_fields = ("name", "last_name", "medical_system_code")
 
     fieldsets = (
@@ -37,7 +36,6 @@ class DoctorAdmin(admin.ModelAdmin):
             },
         ),
         ("Contact Information", {"fields": ("address", "phone_number")}),
-        ("Status", {"fields": ("is_active", "is_doctor")}),
     )
     readonly_fields = ("created_at", "updated_at")
 
