@@ -2,7 +2,7 @@ from django.db.models.query import QuerySet
 from rest_framework import generics
 from .models import Prescription, Drug
 from .serializers import PrescriptionSerializer, DrugSerializer
-from doctor.views import (
+from utils.auth import (
     get_doctor_from_token,
     get_user_from_token,
     get_patient_from_token,

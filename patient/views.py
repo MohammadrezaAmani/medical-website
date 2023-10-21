@@ -11,7 +11,7 @@ from session.models import Session
 from rest_framework.decorators import api_view
 from doctor.serializers import DoctorSerializer
 
-from doctor.views import (
+from utils.auth import (
     get_patient_from_token,
 )
 

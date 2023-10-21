@@ -1,8 +1,5 @@
-import jwt
-from django.conf import settings
-from django.http import Http404, JsonResponse
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from django.http import Http404
+from django.contrib.auth import authenticate
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,53 +12,13 @@ from patient.serializers import PatientSerializer, PatientCreateSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
 from session.models import Session
+from utils.auth import (
+    get_doctor_from_token,
+)
 from .serializers import DoctorLoginSerializer, DoctorSerializer
 from .models import Doctor
 
 
-def get_user_from_token(request):
-    token = request.headers.get("Authorization")
-    if token:
-        try:
-            token = token.replace("Bearer ", "")
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user_id = payload.get("user_id")
-            try:
-                user = User.objects.get(id=user_id)
-                return user
-            except User.DoesNotExist:
-                return None
-        except jwt.ExpiredSignatureError:
-            return JsonResponse({"error": "Token has expired"}, status=401)
-        except jwt.DecodeError:
-            return JsonResponse({"error": "Invalid token"}, status=401)
-    else:
-        return JsonResponse({"error": "Token not provided"}, status=401)
-
-
-def get_doctor_from_token(request):
-    try:
-        user = get_user_from_token(request)
-        if isinstance(user, User):
-            doctor = Doctor.objects.get(user=user)
-            print(doctor)
-            return doctor
-        else:
-            return user
-    except Doctor.DoesNotExist:
-        return None
-
-
-def get_patient_from_token(request):
-    try:
-        user = get_user_from_token(request)
-        if isinstance(user, User):
-            patient = Patient.objects.get(user=user)
-            return patient
-        else:
-            return user
-    except Patient.DoesNotExist:
-        return None
 
 
 class DoctorLoginView(APIView):
@@ -72,8 +29,6 @@ class DoctorLoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
-        login(request, user)
-        print(user)
         doctors = Doctor.objects.filter(user=user, is_active=True, is_doctor=True)
         patient = Patient.objects.filter(user=user, is_active=True, is_doctor=False)
         if len(doctors) > 0:

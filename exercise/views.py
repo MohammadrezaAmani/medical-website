@@ -17,7 +17,7 @@ from .serializers import (
     OrganSerializer,
     ExerciseSerializer,
 )
-from doctor.views import get_doctor_from_token
+from utils.auth import get_doctor_from_token
 
 
 class EquipmentListCreateView(generics.ListCreateAPIView):
