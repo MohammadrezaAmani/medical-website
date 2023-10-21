@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = "__all__"
+        exclude = ["user", "password"]
 
 
 class PatientLoginSerializer(serializers.Serializer):
