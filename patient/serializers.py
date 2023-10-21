@@ -27,9 +27,9 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         patient = Patient.objects.create(**validated_data)
         user = User.objects.create_user(
             username=validated_data["username"],
-            password=validated_data["password"],
             email=validated_data["email"],
         )
+        user.set_password(validated_data["password"])
         patient.user = user
         user.save()
         patient.save()
