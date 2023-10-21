@@ -1,3 +1,4 @@
+from typing import Any
 from rest_framework import serializers
 from patient.models import Patient
 from django.contrib.auth.models import User
@@ -31,6 +32,16 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data["password"])
         patient.user = user
+        user.save()
+        patient.save()
+        return patient
+    
+    def update(self, instance: Any, validated_data: Any) -> Any:
+        patient = super().update(instance, validated_data)
+        user = patient.user
+        user.username = validated_data["username"]
+        user.email = validated_data["email"]
+        user.set_password(validated_data["password"])
         user.save()
         patient.save()
         return patient
