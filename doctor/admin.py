@@ -5,6 +5,7 @@ from .models import Doctor
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "name",
         "last_name",
         "user",
@@ -23,8 +24,10 @@ class DoctorAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
+                    "password",
+                    "username",
+                    "email",
                     "last_name",
-                    "user",
                     "photo",
                     "bio",
                     "gender",

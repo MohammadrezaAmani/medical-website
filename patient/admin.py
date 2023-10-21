@@ -55,9 +55,7 @@ class PatientAdmin(admin.ModelAdmin):
         return obj.user.get_full_name()
 
     get_user_full_name.short_description = "User Full Name"
-    get_user_full_name.admin_order_field = (
-        "user__first_name"
-    )
+    get_user_full_name.admin_order_field = "user__first_name"
 
 
 # admin.site.site_header = "Your Admin Site Header"  # Customize the admin site header

@@ -20,7 +20,7 @@ from .serializers import (
 class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    http_method_names = ["get"] 
+    http_method_names = ["get"]
 
 
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):

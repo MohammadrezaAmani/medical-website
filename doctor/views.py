@@ -323,3 +323,18 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
                 raise Http404
         else:
             return Response({"error": "permission denied"})
+
+
+class AddPatient(APIView):
+    serializer_class = PatientSerializer
+
+    def post(self, request):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor):
+            serializer = PatientSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
