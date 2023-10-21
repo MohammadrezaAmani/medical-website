@@ -18,10 +18,10 @@ class PrescriptionListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self) -> QuerySet:
         doctor = get_doctor_from_token(self.request)
-        if isinstance(doctor,Doctor):
+        if isinstance(doctor, Doctor):
             return Prescription.objects.filter(patient__doctor=doctor)
         patient = get_user_from_token(self.request)
-        if isinstance(patient,Patient):
+        if isinstance(patient, Patient):
             patient = get_patient_from_token(self.request)
             return Prescription.objects.filter(patient=patient)
         else:
@@ -34,10 +34,10 @@ class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self) -> QuerySet:
         doctor = get_doctor_from_token(self.request)
-        if isinstance(doctor,Doctor):
+        if isinstance(doctor, Doctor):
             return Prescription.objects.filter(patient__doctor=doctor)
         patient = get_user_from_token(self.request)
-        if isinstance(patient,Patient):
+        if isinstance(patient, Patient):
             patient = get_patient_from_token(self.request)
             return Prescription.objects.filter(patient=patient)
         else:
@@ -50,10 +50,10 @@ class DrugListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self) -> QuerySet:
         doctor = get_doctor_from_token(self.request)
-        if isinstance(doctor,Doctor):
+        if isinstance(doctor, Doctor):
             return Drug.objects.filter(patient__doctor=doctor)
         patient = get_user_from_token(self.request)
-        if isinstance(patient,Patient):
+        if isinstance(patient, Patient):
             patient = get_patient_from_token(self.request)
             return Drug.objects.filter(patient=patient)
         else:
@@ -66,10 +66,10 @@ class DrugDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self) -> QuerySet:
         doctor = get_doctor_from_token(self.request)
-        if isinstance(doctor,Doctor):
+        if isinstance(doctor, Doctor):
             return Drug.objects.filter(patient__doctor=doctor)
         patient = get_user_from_token(self.request)
-        if isinstance(patient,Patient):
+        if isinstance(patient, Patient):
             patient = get_patient_from_token(self.request)
             return Drug.objects.filter(patient=patient)
         else:
