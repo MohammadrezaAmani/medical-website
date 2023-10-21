@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
-from exercise.serializers import ExerciseSerializer
+from exercise.serializers import ExerciseSerializer, ExerciseCreateSerializer
 from exercise.models import Exercise
 from patient.serializers import PatientSerializer, PatientCreateSerializer
 from patient.models import Patient
@@ -333,6 +333,20 @@ class AddPatient(APIView):
         if isinstance(doctor, Doctor):
             serializer = PatientCreateSerializer(data=request.data)
             if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+class AddExercise(APIView):
+    serializer_class = ExerciseCreateSerializer
+
+    def post(self, request):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor):
+            serializer = ExerciseSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.owner = doctor
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

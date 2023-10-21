@@ -10,7 +10,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    
+    'simpleui',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "rest_framework_simplejwt",
+    "django.contrib.admin",
 ]
 
 MIDDLEWARE = [

@@ -65,7 +65,8 @@ class Organ(models.Model):
 
 
 class Exercise(models.Model):
-    owner = models.ForeignKey("doctor.Doctor", on_delete=models.CASCADE)
+    owner = models.ForeignKey("doctor.Doctor", on_delete=models.CASCADE,
+                              null=True, blank=True)
     video = models.FileField(upload_to="videos/", null=True, blank=True)
     photo = models.ImageField(upload_to="images/", null=True, blank=True)
     name = models.CharField(max_length=100, unique=True)

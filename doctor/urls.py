@@ -32,4 +32,5 @@ urlpatterns = [
     path("me/", views.DoctorMe.as_view(), name="doctor-me"),
     path("add-session/", views.AddSession.as_view(), name="add-session"),
     path("add-patient/", views.AddPatient.as_view(), name="add-patient"),
+    path("add-exercise/", views.AddExercise.as_view(), name="add-exercise"),
 ]
