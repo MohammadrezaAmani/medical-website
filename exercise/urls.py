@@ -12,7 +12,7 @@ from .views import (
     TargetDetailView,
     OrganListCreateView,
     OrganDetailView,
-    ExerciseListView
+    ExerciseListView,
 )
 
 urlpatterns = [

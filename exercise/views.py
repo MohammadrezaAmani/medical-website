@@ -6,7 +6,7 @@ from .models import (
     PlacementPosition,
     Target,
     Organ,
-    Exercise
+    Exercise,
 )
 from .serializers import (
     EquipmentSerializer,
@@ -18,6 +18,7 @@ from .serializers import (
     ExerciseSerializer,
 )
 from doctor.views import get_doctor_from_token
+
 
 class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
@@ -89,6 +90,7 @@ class OrganDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Organ.objects.all()
     serializer_class = OrganSerializer
     http_method_names = ["get"]
+
 
 class ExerciseListView(generics.ListCreateAPIView):
     queryset = Exercise.objects.all()

@@ -10,8 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    
-    'simpleui',
+    "simpleui",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

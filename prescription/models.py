@@ -11,6 +11,9 @@ class Prescription(models.Model):
     def get_absolute_url(self):
         return reverse("Prescription_detail", kwargs={"pk": self.pk})
 
+    def __str__(self):
+        return f"Prescription {self.id}"
+
 
 class Drug(models.Model):
     id = models.AutoField(primary_key=True)

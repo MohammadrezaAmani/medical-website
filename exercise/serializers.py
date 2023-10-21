@@ -50,8 +50,9 @@ class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
         fields = "__all__"
-        
+
+
 class ExerciseCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
-        exlude = ('owner')
+        exlude = "owner"

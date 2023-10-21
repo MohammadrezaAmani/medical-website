@@ -338,6 +338,8 @@ class AddPatient(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "permission denied"})
+
+
 class AddExercise(APIView):
     serializer_class = ExerciseCreateSerializer
 
