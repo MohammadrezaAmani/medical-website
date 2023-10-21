@@ -1,5 +1,8 @@
 from django.db.models.query import QuerySet
 from rest_framework import generics
+
+from doctor.models import Doctor
+from patient.models import Patient
 from .models import Prescription, Drug
 from .serializers import PrescriptionSerializer, DrugSerializer
 from utils.auth import (
@@ -14,11 +17,11 @@ class PrescriptionListCreateView(generics.ListCreateAPIView):
     serializer_class = PrescriptionSerializer
 
     def get_queryset(self) -> QuerySet:
-        user = get_user_from_token(self.request)
-        if user.is_doctor:
-            doctor = get_doctor_from_token(self.request)
+        doctor = get_doctor_from_token(self.request)
+        if isinstance(doctor,Doctor):
             return Prescription.objects.filter(patient__doctor=doctor)
-        elif user.is_patient:
+        patient = get_user_from_token(self.request)
+        if isinstance(patient,Patient):
             patient = get_patient_from_token(self.request)
             return Prescription.objects.filter(patient=patient)
         else:
@@ -30,11 +33,11 @@ class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PrescriptionSerializer
 
     def get_queryset(self) -> QuerySet:
-        user = get_user_from_token(self.request)
-        if user.is_doctor:
-            doctor = get_doctor_from_token(self.request)
+        doctor = get_doctor_from_token(self.request)
+        if isinstance(doctor,Doctor):
             return Prescription.objects.filter(patient__doctor=doctor)
-        elif user.is_patient:
+        patient = get_user_from_token(self.request)
+        if isinstance(patient,Patient):
             patient = get_patient_from_token(self.request)
             return Prescription.objects.filter(patient=patient)
         else:
@@ -46,11 +49,11 @@ class DrugListCreateView(generics.ListCreateAPIView):
     serializer_class = DrugSerializer
 
     def get_queryset(self) -> QuerySet:
-        user = get_user_from_token(self.request)
-        if user.is_doctor:
-            doctor = get_doctor_from_token(self.request)
+        doctor = get_doctor_from_token(self.request)
+        if isinstance(doctor,Doctor):
             return Drug.objects.filter(patient__doctor=doctor)
-        elif user.is_patient:
+        patient = get_user_from_token(self.request)
+        if isinstance(patient,Patient):
             patient = get_patient_from_token(self.request)
             return Drug.objects.filter(patient=patient)
         else:
@@ -62,11 +65,11 @@ class DrugDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DrugSerializer
 
     def get_queryset(self) -> QuerySet:
-        user = get_user_from_token(self.request)
-        if user.is_doctor:
-            doctor = get_doctor_from_token(self.request)
+        doctor = get_doctor_from_token(self.request)
+        if isinstance(doctor,Doctor):
             return Drug.objects.filter(patient__doctor=doctor)
-        elif user.is_patient:
+        patient = get_user_from_token(self.request)
+        if isinstance(patient,Patient):
             patient = get_patient_from_token(self.request)
             return Drug.objects.filter(patient=patient)
         else:

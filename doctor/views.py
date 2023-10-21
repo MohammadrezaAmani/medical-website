@@ -29,8 +29,8 @@ class DoctorLoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
-        doctors = Doctor.objects.filter(user=user, is_doctor=True)
-        patient = Patient.objects.filter(user=user, is_doctor=False)
+        doctors = Doctor.objects.filter(user=user)
+        patient = Patient.objects.filter(user=user)
         if len(doctors) > 0:
             if doctors[0].is_active:
                 refresh = RefreshToken.for_user(user)
