@@ -43,12 +43,15 @@ class Doctor(models.Model):
 def create_user(sender, instance, created, **kwargs):
     if created:
         user = User.objects.create(
-            username=instance.name, password=instance.password, email=instance.email
+            username=instance.username, email=instance.email
         )
+        user.set_password(instance.password)
         instance.user = user
+        instance.user.save()
         instance.save()
     else:
-        instance.user.username = instance.name
-        instance.user.password = instance.password
+        instance.user.username = instance.username
+        instance.user.set_password(instance.password)
+        print(instance.user.password)
         instance.user.email = instance.email
         instance.user.save()
