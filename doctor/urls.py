@@ -33,4 +33,5 @@ urlpatterns = [
     path("add-session/", views.AddSession.as_view(), name="add-session"),
     path("add-patient/", views.AddPatient.as_view(), name="add-patient"),
     path("add-exercise/", views.AddExercise.as_view(), name="add-exercise"),
+    path("session-date/<str:date>/", views.SessionDate.as_view(), name="session-date"),
 ]
