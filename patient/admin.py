@@ -12,10 +12,8 @@ class PatientAdmin(admin.ModelAdmin):
         "gender",
         "birth_date",
         "is_active",
-        "is_doctor",
-        "is_patient",
     )
-    list_filter = ("gender", "is_active", "is_doctor", "is_patient")
+    list_filter = ("gender", "is_active")
     search_fields = ("name", "last_name", "insurance_number")
 
     fieldsets = (

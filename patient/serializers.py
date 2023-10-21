@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        exclude = ["user", "password"]
+        exclude = ["user"]
 
 
 class PatientLoginSerializer(serializers.Serializer):
@@ -21,7 +21,6 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {
             "password": {"write_only": True},
-            "username": {"write_only": True},
         }
 
     def create(self, validated_data):
