@@ -40,9 +40,7 @@ class Doctor(models.Model):
 @receiver(post_save, sender=Doctor)
 def create_user(sender, instance, created, **kwargs):
     if created:
-        user = User.objects.create(
-            username=instance.username, email=instance.email
-        )
+        user = User.objects.create(username=instance.username, email=instance.email)
         user.set_password(instance.password)
         instance.user = user
         instance.user.save()

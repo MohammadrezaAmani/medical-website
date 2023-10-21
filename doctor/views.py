@@ -19,8 +19,6 @@ from .serializers import DoctorLoginSerializer, DoctorSerializer
 from .models import Doctor
 
 
-
-
 class DoctorLoginView(APIView):
     serializer_class = DoctorLoginSerializer
     pagination_class = PageNumberPagination
@@ -32,27 +30,25 @@ class DoctorLoginView(APIView):
         doctors = Doctor.objects.filter(user=user)
         patient = Patient.objects.filter(user=user)
         if len(doctors) > 0:
-            if doctors[0].is_active:
-                refresh = RefreshToken.for_user(user)
-                return Response(
-                    {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                        "user_id": user.id,
-                        "is_doctor": True,
-                    }
-                )
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "user_id": user.id,
+                    "is_doctor": True,
+                }
+            )
         elif len(patient) > 0:
-            if patient[0].is_active:
-                refresh = RefreshToken.for_user(user)
-                return Response(
-                    {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                        "user_id": user.id,
-                        "is_doctor": False,
-                    }
-                )
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "user_id": user.id,
+                    "is_doctor": False,
+                }
+            )
         else:
             return Response(
                 {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
@@ -122,6 +118,7 @@ class AddSession(APIView):
 
     def post(self, request):
         doctor = get_doctor_from_token(request)
+        print(request.data)
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
@@ -161,9 +158,15 @@ class DoctorSessionsDetails(generics.RetrieveUpdateDestroyAPIView):
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
-            sessions = Session.objects.filter(patient__doctor=doctor)
-            serializer = SessionSerializer(sessions, many=True)
-            return Response(serializer.data)
+            try:
+                sessions = Session.objects.filter(
+                    patient__doctor=doctor, id=kwargs["pk"]
+                )
+                sessions = sessions[0]
+                serializer = SessionSerializer(sessions)
+                return Response(serializer.data)
+            except Session.DoesNotExist:
+                raise Http404
         else:
             return Response({"error": "permission denied"})
 
@@ -186,21 +189,13 @@ class DoctorSessionsDetails(generics.RetrieveUpdateDestroyAPIView):
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
-            session = Session.objects.get(id=kwargs["pk"])
-            session.delete()
-            return Response(
-                {"message": "Session deleted successfully."}, status=status.HTTP_200_OK
-            )
-        else:
-            return Response({"error": "permission denied"})
-
-    def get_object(self, request, *args, **kwargs):
-        doctor = get_doctor_from_token(request)
-        if isinstance(doctor, Doctor) is False:
-            return doctor
-        if isinstance(doctor, Doctor):
             try:
-                return Session.objects.get(pk=kwargs["pk"])
+                session = Session.objects.get(id=kwargs["pk"])
+                session.delete()
+                return Response(
+                    {"message": "Session deleted successfully."},
+                    status=status.HTTP_200_OK,
+                )
             except Session.DoesNotExist:
                 raise Http404
         else:
@@ -217,7 +212,7 @@ class DoctorExercises(generics.RetrieveAPIView):
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
-            exercise = Exercise.objects.filter(patient__doctor=doctor)
+            exercise = Exercise.objects.filter(owner=doctor)
             serializer = ExerciseSerializer(exercise, many=True)
             return Response(serializer.data)
         else:
@@ -234,8 +229,11 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
-            exercise = Exercise.objects.filter(patient__doctor=doctor)
-            serializer = ExerciseSerializer(exercise, many=True)
+            exercise = Exercise.objects.filter(owner=doctor, id=kwargs["pk"])
+            if len(exercise) == 0:
+                return Response({"error": "permission denied"})
+            exercise = exercise[0]
+            serializer = ExerciseSerializer(exercise)
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
@@ -259,21 +257,14 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
         if isinstance(doctor, Doctor) is False:
             return doctor
         if isinstance(doctor, Doctor):
-            exercise = Exercise.objects.get(id=kwargs["pk"])
-            exercise.delete()
-            return Response(
-                {"message": "exercise deleted successfully."}, status=status.HTTP_200_OK
-            )
-        else:
-            return Response({"error": "permission denied"})
-
-    def get_object(self, request, *args, **kwargs):
-        doctor = get_doctor_from_token(request)
-        if isinstance(doctor, Doctor) is False:
-            return doctor
-        if isinstance(doctor, Doctor):
             try:
-                return Exercise.objects.get(pk=kwargs["pk"])
+                exercise = Exercise.objects.get(id=kwargs["pk"])
+                exercise.delete()
+
+                return Response(
+                    {"message": "exercise deleted successfully."},
+                    status=status.HTTP_200_OK,
+                )
             except Exercise.DoesNotExist:
                 raise Http404
         else:
@@ -286,6 +277,7 @@ class AddPatient(APIView):
     def post(self, request):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
+            request.data["doctor"] = doctor.id
             serializer = PatientCreateSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -301,9 +293,9 @@ class AddExercise(APIView):
     def post(self, request):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
+            request.data["owner"] = doctor.id
             serializer = ExerciseSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.owner = doctor
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

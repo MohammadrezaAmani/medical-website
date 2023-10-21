@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from doctor.models import Doctor
 from patient.models import Patient
 
+
 def get_user_from_token(request):
     token = request.headers.get("Authorization")
     if token:

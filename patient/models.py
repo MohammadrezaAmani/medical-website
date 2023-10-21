@@ -19,6 +19,8 @@ class Patient(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
     username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100, null=True, blank=True)
+    password = models.TextField(max_length=100)
     photo = models.ImageField(upload_to="images/", null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS)

@@ -12,7 +12,6 @@ class DoctorAdmin(admin.ModelAdmin):
         "gender",
         "birth_date",
         "medical_system_code",
-
     )
     list_filter = ("gender", "birth_date")
     search_fields = ("name", "last_name", "medical_system_code")
