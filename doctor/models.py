@@ -26,7 +26,7 @@ class Doctor(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     medical_system_code = models.CharField(max_length=10, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
-    phone_number = models.CharField(max_length=10, null=True, blank=True)
+    phone_number = models.CharField(max_length=11, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
