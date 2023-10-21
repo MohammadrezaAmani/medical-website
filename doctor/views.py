@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from exercise.serializers import ExerciseSerializer
 from exercise.models import Exercise
-from patient.serializers import PatientSerializer
+from patient.serializers import PatientSerializer, PatientCreateSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
 from session.models import Session
@@ -326,12 +326,12 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AddPatient(APIView):
-    serializer_class = PatientSerializer
+    serializer_class = PatientCreateSerializer
 
     def post(self, request):
         doctor = get_doctor_from_token(request)
         if isinstance(doctor, Doctor):
-            serializer = PatientSerializer(data=request.data)
+            serializer = PatientCreateSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

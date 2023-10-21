@@ -31,4 +31,5 @@ urlpatterns = [
     path("login/", views.DoctorLoginView.as_view(), name="doctor-login"),
     path("me/", views.DoctorMe.as_view(), name="doctor-me"),
     path("add-session/", views.AddSession.as_view(), name="add-session"),
+    path("add-patient/", views.AddPatient.as_view(), name="add-patient"),
 ]
