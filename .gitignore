@@ -5,6 +5,7 @@ __pycache__/
 .idea/
 # C extensions
 *.so
+db.sqlite3
 00*
 # Distribution / packaging
 .Python
