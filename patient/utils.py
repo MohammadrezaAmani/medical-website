@@ -1,6 +1,7 @@
 import string
 import secrets
 
+
 def random_password_generator():
     password = ""
     for _ in range(9):

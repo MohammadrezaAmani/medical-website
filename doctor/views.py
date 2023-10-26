@@ -102,8 +102,6 @@ class DoctorPatients(generics.RetrieveAPIView):
             return Response({"error": "permission denied"})
 
 
-
-
 class DoctorPatientDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer

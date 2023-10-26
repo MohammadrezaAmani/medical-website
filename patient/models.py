@@ -37,7 +37,6 @@ class Patient(models.Model):
     height = models.FloatField(null=True, blank=True)
     weight = models.FloatField(null=True, blank=True)
 
-
     def __str__(self):
         return self.name
 
