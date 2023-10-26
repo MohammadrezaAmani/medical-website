@@ -4,6 +4,9 @@ from .models import Doctor
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
+    """
+    Admin view for the Doctor model.
+    """
     list_display = (
         "id",
         "name",
@@ -39,6 +42,15 @@ class DoctorAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
 
     def get_user_full_name(self, obj):
+        """
+        Returns the full name of the user associated with the doctor object.
+
+        Args:
+            obj: Doctor object.
+
+        Returns:
+            Full name of the user associated with the doctor object.
+        """
         return obj.user.get_full_name()
 
     get_user_full_name.short_description = "User Full Name"
