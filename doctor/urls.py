@@ -9,6 +9,11 @@ urlpatterns = [
         name="doctor-patients",
     ),
     path(
+        "patients/<int:pk>",
+        views.DoctorPatientDetails.as_view(),
+        name="doctor-patients",
+    ),
+    path(
         "sessions/",
         views.DoctorSessions.as_view(),
         name="doctor",

@@ -162,3 +162,10 @@ cython_debug/
 # custom
 images/
 videos/
+documents/1.pdf
+documents/1_DXx3Bvk.pdf
+documents/1_1dyMipE.pdf
+patient/migrations/0012_alter_patient_id.py
+patient/migrations/0011_patient_blood_type_patient_height_patient_weight.py
+patient/migrations/0010_patient_password.py
+patient/migrations/0009_remove_patient_password_remove_patient_username.py

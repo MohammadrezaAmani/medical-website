@@ -102,6 +102,62 @@ class DoctorPatients(generics.RetrieveAPIView):
             return Response({"error": "permission denied"})
 
 
+
+
+class DoctorPatientDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
+    pagination_class = PageNumberPagination
+
+    def get(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            try:
+                sessions = Patient.objects.filter(
+                    patient__doctor=doctor, id=kwargs["pk"]
+                )
+                sessions = sessions[0]
+                serializer = PatientSerializer(sessions)
+                return Response(serializer.data)
+            except Patient.DoesNotExist:
+                raise Http404
+        else:
+            return Response({"error": "permission denied"})
+
+    def patch(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            session = Patient.objects.get(id=kwargs["pk"])
+            serializer = PatientSerializer(session, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+
+    def delete(self, request, *args, **kwargs):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            try:
+                session = Patient.objects.get(id=kwargs["pk"])
+                session.delete()
+                return Response(
+                    {"message": "Patient deleted successfully."},
+                    status=status.HTTP_200_OK,
+                )
+            except Patient.DoesNotExist:
+                raise Http404
+        else:
+            return Response({"error": "permission denied"})
+
+
 class DoctorMe(APIView):
     seializer_class = DoctorSerializer
 
