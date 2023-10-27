@@ -7,6 +7,7 @@ class DoctorAdmin(admin.ModelAdmin):
     """
     Admin view for the Doctor model.
     """
+
     list_display = (
         "id",
         "name",
