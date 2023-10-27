@@ -7,6 +7,18 @@ from patient.models import Patient
 
 
 def get_user_from_token(request):
+    """
+    Given a request object, extracts the JWT token from the Authorization header,
+    decodes it using the app's secret key, and returns the corresponding User object.
+
+    If the token is invalid or has expired, returns an appropriate error response.
+
+    Args:
+        request: HttpRequest object representing the incoming request.
+
+    Returns:
+        User object corresponding to the user ID stored in the JWT token, or None if the token is invalid.
+    """
     token = request.headers.get("Authorization")
     if token:
         try:
@@ -27,6 +39,15 @@ def get_user_from_token(request):
 
 
 def get_doctor_from_token(request):
+    """
+    Returns the doctor object associated with the given request's token.
+
+    Args:
+        request (HttpRequest): The request object containing the token.
+
+    Returns:
+        Doctor: The doctor object associated with the token, or None if not found.
+    """
     try:
         user = get_user_from_token(request)
         if isinstance(user, User):
@@ -40,6 +61,11 @@ def get_doctor_from_token(request):
 
 
 def get_patient_from_token(request):
+    """
+    Given a request object, retrieves the patient associated with the user token in the request.
+    If the user is not a patient, returns the user object instead.
+    If the patient does not exist, returns None.
+    """
     try:
         user = get_user_from_token(request)
         if isinstance(user, User):
