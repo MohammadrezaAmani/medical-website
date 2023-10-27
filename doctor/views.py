@@ -495,3 +495,102 @@ class AddPrescription(APIView):
         else:
             return Response({"error": "permission denied"})
 
+
+class DoctorPrescriptionDetails(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint that allows a doctor to retrieve, update, or delete an Prescription.
+
+    get:
+    Retrieve an Prescription instance.
+
+    patch:
+    Update an Prescription instance.
+
+    delete:
+    Delete an Prescription instance.
+    """
+
+    pagination_class = PageNumberPagination
+    queryset = Prescription.objects.all()
+    serializer_class = PrescriptionSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Retrieve an prescription instance.
+
+        Args:
+            request: The HTTP request.
+            args: Additional arguments.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            A Response object containing the serialized prescription instance.
+        """
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            prescription = Prescription.objects.filter(owner=doctor, id=kwargs["pk"])
+            if len(prescription) == 0:
+                return Response({"error": "permission denied"})
+            prescription = prescription[0]
+            serializer = PrescriptionSerializer(prescription)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "permission denied"})
+
+    def patch(self, request, *args, **kwargs):
+        """
+        Update an Prescription instance.
+
+        Args:
+            request: The HTTP request.
+            args: Additional arguments.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            A Response object containing the serialized Prescription instance if the update is successful,
+            or a Response object containing the errors if the update is unsuccessful.
+        """
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            prescription = Prescription.objects.get(id=kwargs["pk"])
+            serializer = PrescriptionSerializer(prescription, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete an Prescription instance.
+
+        Args:
+            request: The HTTP request.
+            args: Additional arguments.
+            kwargs: Additional keyword arguments.
+
+        Returns:
+            A Response object containing a success message if the deletion is successful,
+            or a Http404 exception if the Prescription instance does not exist.
+        """
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor) is False:
+            return doctor
+        if isinstance(doctor, Doctor):
+            try:
+                prescription = Prescription.objects.get(id=kwargs["pk"])
+                prescription.delete()
+
+                return Response(
+                    {"message": "prescription deleted successfully."},
+                    status=status.HTTP_200_OK,
+                )
+            except Prescription.DoesNotExist:
+                raise Http404
+        else:
+            return Response({"error": "permission denied"})
