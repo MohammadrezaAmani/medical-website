@@ -6,6 +6,21 @@ from django.urls import reverse
 
 
 class Session(models.Model):
+    """
+    A model representing a session between a patient and a doctor.
+
+    Attributes:
+        id (AutoField): The primary key of the session.
+        patient (ForeignKey): The patient associated with the session.
+        prescription (ManyToManyField): The prescriptions associated with the session.
+        date (DateField): The date of the session.
+        time (TimeField): The time of the session.
+        session_type (CharField): The type of the session.
+        status (CharField): The status of the session.
+        rate (IntegerField): The rating of the session.
+        description (TextField): The description of the session.
+    """
+
     id = models.AutoField(primary_key=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     prescription = models.ManyToManyField(Prescription)
