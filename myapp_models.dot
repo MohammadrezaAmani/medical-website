@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2023-10-26 12:10
+  // Created: 2023-10-27 08:50
   // Cli Options: -a --dot -o myapp_models.dot
 
   fontname = "Roboto"
@@ -486,14 +486,6 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">phone_number</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">CharField</FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT COLOR="#7B7B7B" FACE="Roboto">photo</FONT>
     </TD><TD ALIGN="LEFT">
     <FONT COLOR="#7B7B7B" FACE="Roboto">ImageField</FONT>
@@ -683,9 +675,9 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">phone_number</FONT>
+    <FONT FACE="Roboto">phone_number</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">CharField</FONT>
+    <FONT FACE="Roboto">CharField</FONT>
     </TD></TR>
   
   
@@ -986,48 +978,6 @@ digraph model_graph {
     </TABLE>
     >]
 
-  prescription_models_Drug [label=<
-    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
-    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    Drug
-    </B></FONT></TD></TR>
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Roboto"><B>id</B></FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Roboto"><B>AutoField</B></FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">description</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">TextField</FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Roboto">name</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Roboto">CharField</FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">others</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Roboto">JSONField</FONT>
-    </TD></TR>
-  
-  
-    </TABLE>
-    >]
-
 
 
 
@@ -1302,9 +1252,6 @@ digraph model_graph {
   exercise_models_Exercise -> exercise_models_Equipment
   [label=" accessories (exercise)"] [arrowhead=dot arrowtail=dot, dir=both];
 
-
-  prescription_models_Prescription -> prescription_models_Drug
-  [label=" drugs (prescription)"] [arrowhead=dot arrowtail=dot, dir=both];
 
   prescription_models_Prescription -> exercise_models_Exercise
   [label=" exercises (prescription)"] [arrowhead=dot arrowtail=dot, dir=both];

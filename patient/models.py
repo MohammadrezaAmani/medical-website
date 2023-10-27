@@ -34,6 +34,7 @@ class Patient(models.Model):
     """
 
     id = models.AutoField(primary_key=True)
+    phone_number = models.CharField(max_length=10, unique=True)
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -54,7 +55,6 @@ class Patient(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS)
     birth_date = models.DateField(null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
-    phone_number = models.CharField(max_length=10, null=True, blank=True)
     insurance_number = models.CharField(max_length=10, null=True, blank=True)
     insurance_company = models.CharField(max_length=100, null=True, blank=True)
     injury_date = models.DateField(null=True, blank=True)

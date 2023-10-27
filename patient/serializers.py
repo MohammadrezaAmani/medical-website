@@ -71,20 +71,26 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         Returns:
             The created patient instance.
         """
-        patient = Patient.objects.create(**validated_data)
-        print(validated_data)
-        username = patient.phone_number
-        password = random_password_generator()
-        patient.password = password
-        user = User.objects.create_user(
-            username=username,
-            email=validated_data["email"],
-        )
-        user.set_password(password)
-        patient.user = user
-        patient.save()
-        user.save()
-        return patient
+        print(validated_data["phone_number"])
+        try:
+            if Patient.objects.filter(phone_number=validated_data["phone_number"]).exists():
+                return {"error":"Patient with this phone number already exists"}
+            print('USER CREATED')
+            patient = Patient.objects.create(**validated_data)
+            username = patient.phone_number
+            password = random_password_generator()
+            patient.password = password
+            user = User.objects.create_user(
+                username=username,
+                email=validated_data["email"],
+            )
+            user.set_password(password)
+            patient.user = user
+            patient.save()
+            user.save()
+            return patient
+        except Exception as e:
+            return {"error": str(e)}
 
     def update(self, instance: Any, validated_data: Any) -> Any:
         """
@@ -99,9 +105,12 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         Returns:
             The updated patient instance.
         """
-        patient = super().update(instance, validated_data)
-        user = patient.user
-        user.email = validated_data["email"]
-        patient.save()
-        user.save()
-        return patient
+        try:
+            patient = super().update(instance, validated_data)
+            user = patient.user
+            user.email = validated_data["email"]
+            patient.save()
+            user.save()
+            return patient
+        except Exception as e:
+            return {"error": str(e)}

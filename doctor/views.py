@@ -12,6 +12,8 @@ from patient.serializers import PatientSerializer, PatientCreateSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
 from session.models import Session
+from prescription.models import Prescription
+from prescription.serializers import PrescriptionSerializer
 from utils.auth import (
     get_doctor_from_token,
 )
@@ -394,7 +396,7 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 class AddPatient(APIView):
-    serializer_class = PatientCreateSerializer
+    serializer_class = PatientSerializer
 
     def post(self, request):
         doctor = get_doctor_from_token(request)
@@ -403,7 +405,9 @@ class AddPatient(APIView):
             serializer = PatientCreateSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                patient = Patient.objects.get(phone_number=serializer.data["phone_number"])
+                print(patient,'-----------------------')
+                return Response(PatientSerializer(patient).data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "permission denied"})
@@ -476,3 +480,18 @@ class SessionDate(APIView):
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
+
+class AddPrescription(APIView):
+    serializer_class = PrescriptionSerializer
+
+    def post(self, request):
+        doctor = get_doctor_from_token(request)
+        if isinstance(doctor, Doctor):
+            serializer = PrescriptionSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "permission denied"})
+

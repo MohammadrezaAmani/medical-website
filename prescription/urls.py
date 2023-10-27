@@ -2,8 +2,8 @@ from django.urls import path
 from .views import (
     PrescriptionListCreateView,
     PrescriptionDetailView,
-    DrugListCreateView,
-    DrugDetailView,
+    # DrugListCreateView,
+    # DrugDetailView,
 )
 
 """
@@ -20,6 +20,6 @@ urlpatterns = [
         name="prescription-detail",
     ),
     # Drug URLs
-    path("drugs/", DrugListCreateView.as_view(), name="drug-list"),
-    path("drugs/<int:pk>/", DrugDetailView.as_view(), name="drug-detail"),
+    # path("drugs/", DrugListCreateView.as_view(), name="drug-list"),
+    # path("drugs/<int:pk>/", DrugDetailView.as_view(), name="drug-detail"),
 ]

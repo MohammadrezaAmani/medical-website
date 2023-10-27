@@ -26,10 +26,9 @@ class DoctorAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
-                    "password",
-                    "username",
-                    "email",
                     "last_name",
+                    "password",
+                    "email",
                     "photo",
                     "bio",
                     "gender",
@@ -38,7 +37,7 @@ class DoctorAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Contact Information", {"fields": ("address", "phone_number")}),
+        ("Contact Information", {"fields": ("address", "username")}),
     )
     readonly_fields = ("created_at", "updated_at")
 
