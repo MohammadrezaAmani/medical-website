@@ -6,12 +6,26 @@ from .utils import random_password_generator
 
 
 class PatientSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Patient model.
+    """
+
     class Meta:
         model = Patient
         exclude = ["user"]
 
     def update(self, instance: Any, validated_data: Any) -> Any:
-        # patient = Patient.objects.filter(id=instance.i)
+        """
+        Update the patient instance with the validated data.
+
+        Args:
+            instance (Any): The patient instance to update.
+            validated_data (Any): The validated data to update the instance with.
+
+        Returns:
+            Any: The updated patient instance.
+        """
+        patient = Patient.objects.filter(id=instance.i)
         user = patient.user
         if "email" in validated_data:
             user.email = validated_data["email"]
@@ -21,16 +35,42 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 class PatientLoginSerializer(serializers.Serializer):
+    """
+    Serializer for patient login.
+
+    Fields:
+    - username: EmailField with max length of 100 characters.
+    - password: CharField with max length of 100 characters.
+    """
+
     username = serializers.EmailField(max_length=100)
     password = serializers.CharField(max_length=100)
 
 
 class PatientCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating and updating Patient instances.
+
+    Excludes 'user' and 'id' fields from the serialized data.
+    Generates a random password for the patient and creates a user instance with the patient's phone number as the username.
+    """
+
     class Meta:
         model = Patient
         exclude = ["user", "id"]
 
     def create(self, validated_data):
+        """
+        Creates a new Patient instance with the given validated data.
+
+        Generates a random password for the patient and creates a user instance with the patient's phone number as the username.
+
+        Args:
+            validated_data: The validated data to create the patient instance with.
+
+        Returns:
+            The created patient instance.
+        """
         patient = Patient.objects.create(**validated_data)
         print(validated_data)
         username = patient.phone_number
@@ -47,6 +87,18 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         return patient
 
     def update(self, instance: Any, validated_data: Any) -> Any:
+        """
+        Updates an existing Patient instance with the given validated data.
+
+        Updates the patient's email and saves the changes to the patient and user instances.
+
+        Args:
+            instance: The existing patient instance to update.
+            validated_data: The validated data to update the patient instance with.
+
+        Returns:
+            The updated patient instance.
+        """
         patient = super().update(instance, validated_data)
         user = patient.user
         user.email = validated_data["email"]

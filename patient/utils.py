@@ -3,6 +3,12 @@ import secrets
 
 
 def random_password_generator():
+    """
+    Generates a random password consisting of 9 lowercase letters, one uppercase letter, and one digit.
+
+    Returns:
+        str: A randomly generated password.
+    """
     password = ""
     for _ in range(9):
         password += secrets.choice(string.ascii_lowercase)

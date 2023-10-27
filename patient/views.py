@@ -17,19 +17,28 @@ from utils.auth import (
 
 
 class PatientLoginView(APIView):
+    """
+    API view for patient login.
+
+    This view handles the POST request for patient login. It authenticates the user
+    based on the provided username and password, and returns a response containing
+    a refresh token, an access token, the user ID, and a flag indicating whether the
+    user is a patient or a doctor. If the credentials are invalid, it returns a 401
+    Unauthorized response.
+    """
+
     serializer_class = PatientLoginSerializer
 
     def post(self, request):
-        print("hear")
+        """
+        Handle POST request for patient login.
+        """
         username = request.data.get("username")
         password = request.data.get("password")
-        print(username)
         user = authenticate(username=username, password=password)
-        print(user, "**************")
         login(request, user)
         doctor = Patient.objects.filter(user=user, is_active=True, is_patient=True)
         patient = Patient.objects.filter(user=user, is_active=True, is_patient=False)
-        print("patient")
         if len(doctor) > 0:
             if doctor[0].is_active:
                 refresh = RefreshToken.for_user(user)
@@ -59,10 +68,29 @@ class PatientLoginView(APIView):
 
 
 class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API view for patient detail.
+
+    This view provides the following HTTP methods:
+        - GET: Retrieve patient detail.
+        - PATCH: Update patient detail.
+        - DELETE: Delete patient detail.
+
+    The view requires a valid token for authentication. If the token is invalid or does not belong to a patient,
+    the view returns a "permission denied" error.
+
+    Attributes:
+        queryset: Queryset of all Patient objects.
+        serializer_class: Serializer class for Patient objects.
+    """
+
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        Handle GET request for patient detail.
+        """
         patient = get_patient_from_token(request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient)
@@ -71,6 +99,9 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "permission denied"})
 
     def get_object(self):
+        """
+        Get patient object.
+        """
         patient = get_patient_from_token(self.request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient)
@@ -79,6 +110,9 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "permission denied"})
 
     def delete(self, request, *args, **kwargs):
+        """
+        Handle DELETE request for patient detail.
+        """
         patient = get_patient_from_token(request)
         if isinstance(patient, Patient):
             patient.delete()
@@ -87,6 +121,9 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "permission denied"})
 
     def patch(self, request, *args, **kwargs):
+        """
+        Handle PATCH request for patient detail.
+        """
         patient = get_patient_from_token(request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient, data=request.data, partial=True)
@@ -99,10 +136,26 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PatientExercises(generics.RetrieveAPIView):
+    """
+    API view for retrieving exercises for a patient.
+
+    This view requires a valid patient token to be included in the request headers.
+    If the token is valid and belongs to the patient, a list of exercises associated
+    with the patient will be returned in the response. Otherwise, a "permission denied"
+    error message will be returned.
+
+    Attributes:
+        queryset (QuerySet): A QuerySet of all Patient objects.
+        serializer_class (Serializer): The serializer class to use for Patient objects.
+    """
+
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        Handle GET request for patient exercises.
+        """
         patient = get_patient_from_token(request)
         if isinstance(Patient, patient):
             exercises = Patient.exercise_set.all()
@@ -113,10 +166,25 @@ class PatientExercises(generics.RetrieveAPIView):
 
 
 class PatientSessions(generics.RetrieveAPIView):
+    """
+    API view for retrieving patient sessions.
+
+    This view handles GET requests for patient sessions. It retrieves the patient object from the request token,
+    and returns a list of sessions associated with that patient. If the patient is not authorized to access the sessions,
+    it returns an error message.
+
+    Attributes:
+        queryset: A queryset of all Patient objects.
+        serializer_class: The serializer class used to serialize Patient objects.
+    """
+
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        Handle GET request for patient sessions.
+        """
         patient = get_patient_from_token(request)
         if isinstance(Patient, patient):
             sessions = Session.objects.filter(patient=patient)
@@ -128,6 +196,21 @@ class PatientSessions(generics.RetrieveAPIView):
 
 @api_view(["GET", "PATCH", "POST", "DELETE"])
 def patient_profile(request):
+    """
+    API view for patient profile.
+
+    Methods:
+    GET -- Retrieve patient profile.
+    POST -- Update patient profile.
+    PATCH -- Method not allowed. Use POST method to update your profile.
+    DELETE -- Delete patient profile.
+
+    Returns:
+    GET -- Patient profile data.
+    POST -- Updated patient profile data.
+    DELETE -- Success message.
+
+    """
     patient = get_patient_from_token(request)
 
     if request.method == "GET":
@@ -146,7 +229,6 @@ def patient_profile(request):
             {"error": "Use POST method to update your profile."},
             status=status.HTTP_METHOD_NOT_ALLOWED,
         )
-
     if request.method == "DELETE":
         patient.delete()
         return Response(
@@ -155,6 +237,13 @@ def patient_profile(request):
 
 
 class PatientDoctorView(APIView):
+    """
+    A view to retrieve the doctor associated with a patient.
+
+    Returns the serialized doctor object if the patient is authorized,
+    otherwise returns an error message.
+    """
+
     def get(self, request):
         patient = get_patient_from_token(request)
         if isinstance(patient, Patient):
