@@ -6,6 +6,9 @@ from .views import (
     DrugDetailView,
 )
 
+"""
+This module defines the URL patterns for the prescription app.
+"""
 urlpatterns = [
     # Prescription URLs
     path(

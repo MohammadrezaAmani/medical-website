@@ -4,6 +4,15 @@ from exercise.models import Exercise
 
 
 class Prescription(models.Model):
+    """
+    A model representing a prescription.
+
+    Attributes:
+        id (AutoField): The primary key of the prescription.
+        drugs (ManyToManyField): The drugs prescribed in the prescription.
+        exercises (ManyToManyField): The exercises prescribed in the prescription.
+    """
+
     id = models.AutoField(primary_key=True)
     drugs = models.ManyToManyField("Drug", blank=True)
     exercises = models.ManyToManyField(Exercise, blank=True)
@@ -16,6 +25,16 @@ class Prescription(models.Model):
 
 
 class Drug(models.Model):
+    """
+    A model representing a drug.
+
+    Attributes:
+        id (int): The primary key of the drug.
+        name (str): The name of the drug.
+        description (str, optional): A description of the drug.
+        others (dict, optional): A JSON field for any additional information about the drug.
+    """
+
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
