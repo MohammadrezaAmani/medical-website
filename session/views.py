@@ -21,6 +21,7 @@ class SessionListCreateView(generics.ListCreateAPIView):
         queryset: A queryset of all Session objects.
         serializer_class: The serializer class to use for Session objects.
     """
+
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
 
@@ -33,5 +34,6 @@ class SessionDetailView(generics.RetrieveUpdateDestroyAPIView):
         queryset: A queryset of all Session objects.
         serializer_class: The serializer class to use for Session objects.
     """
+
     queryset = Session.objects.all()
     serializer_class = SessionSerializer

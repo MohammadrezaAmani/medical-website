@@ -6,6 +6,7 @@ class SessionSerializer(serializers.ModelSerializer):
     """
     Serializer for the Session model.
     """
+
     class Meta:
         model = Session
         fields = "__all__"

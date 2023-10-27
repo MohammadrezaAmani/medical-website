@@ -20,6 +20,7 @@ class PrescriptionListCreateView(generics.ListCreateAPIView):
     Doctors can only access prescriptions that belong to their patients.
     Patients can only access their own prescriptions.
     """
+
     queryset = Prescription.objects.all()
     serializer_class = PrescriptionSerializer
 
@@ -47,6 +48,7 @@ class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     Only authorized doctors and patients can access this view.
     """
+
     queryset = Prescription.objects.all()
     serializer_class = PrescriptionSerializer
 
@@ -76,6 +78,7 @@ class DrugListCreateView(generics.ListCreateAPIView):
     Doctors can only access drugs that belong to their patients.
     Patients can only access their own drugs.
     """
+
     queryset = Drug.objects.all()
     serializer_class = DrugSerializer
 
@@ -102,6 +105,7 @@ class DrugDetailView(generics.RetrieveUpdateDestroyAPIView):
     Doctors can only access drugs that belong to their patients.
     Patients can only access their own drugs.
     """
+
     queryset = Drug.objects.all()
     serializer_class = DrugSerializer
 
