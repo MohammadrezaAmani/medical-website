@@ -2,8 +2,16 @@ from django.contrib import admin
 from .models import Patient
 
 
+from django.contrib import admin
+from .models import Patient
+
+
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
+    """
+    Admin class for the Patient model.
+    """
+
     list_display = (
         "name",
         "last_name",
@@ -48,6 +56,15 @@ class PatientAdmin(admin.ModelAdmin):
     )
 
     def get_user_full_name(self, obj):
+        """
+        Returns the full name of the user associated with the patient object.
+
+        Args:
+            obj: The patient object.
+
+        Returns:
+            The full name of the user associated with the patient object.
+        """
         return obj.user.get_full_name()
 
     get_user_full_name.short_description = "User Full Name"
