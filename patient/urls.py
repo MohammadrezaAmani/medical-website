@@ -23,12 +23,12 @@ urlpatterns = [
         name="patient-exercises",
     ),
     path(
-        "patient/sessions/",
+        "sessions/",
         views.PatientSessions.as_view(),
         name="patient-sessions",
     ),
     path("login/", views.PatientLoginView.as_view(), name="patient-login"),
     # path("me/", views.PatientMe.as_view(), name="patient-me"),
     # pk
-    path("patient/profile/", views.patient_profile, name="patient-profile"),
+    path("profile/", views.patient_profile, name="patient-profile"),
 ]

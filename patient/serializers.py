@@ -14,7 +14,7 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         exclude = ["user"]
 
-    def update(self, instance: Any, validated_data: Any) -> Any:
+#    def update(self, instance: Any, validated_data: Any) -> Any:
         """
         Update the patient instance with the validated data.
 
@@ -25,13 +25,16 @@ class PatientSerializer(serializers.ModelSerializer):
         Returns:
             Any: The updated patient instance.
         """
-        patient = Patient.objects.filter(id=instance.i)
-        user = patient.user
-        if "email" in validated_data:
-            user.email = validated_data["email"]
-        patient.save()
-        user.save()
-        return patient
+        #print(instance.id)
+ #       patient = Patient.objects.filter(id=instance.id)
+        
+  #      print(type(patient))
+        #user = patient.user
+        #if "email" in validated_data:
+         #   user.email = validated_data["email"]
+   #     patient.save()
+        #user.save()
+    #    return patient
 
 
 class PatientLoginSerializer(serializers.Serializer):

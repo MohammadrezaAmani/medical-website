@@ -3,11 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-fzpjy1)m)sc0(*py)oi2i2o$qy9xng$o)_hy0*s=bu5db884s&"
+SECRET_KEY = "ct0m#--bsprfiv6dd+**#qqn37-=mzo!npq6&s8rl22m0_u(j3"
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['media.actelmon.ir','130.185.75.178','back.actelmon.ir']
 
 INSTALLED_APPS = [
     "simpleui",
@@ -95,9 +95,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = "static/"
-
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # AUTH_USER_MODEL = 'doctor.baseuser'
@@ -123,3 +120,12 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
     "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+
+# Static files configuration
+STATIC_URL = '/static/'
+#STATIC_ROOT = '/home/thrita/ThritaTech/static/'
+
+# Media files configuration
+MEDIA_URL = '/media/'
+#MEDIA_ROOT = '/home/thrita/ThritaTech/media/'

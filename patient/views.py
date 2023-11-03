@@ -37,10 +37,23 @@ class PatientLoginView(APIView):
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
         login(request, user)
-        doctor = Patient.objects.filter(user=user, is_active=True, is_patient=True)
-        patient = Patient.objects.filter(user=user, is_active=True, is_patient=False)
-        if len(doctor) > 0:
-            if doctor[0].is_active:
+#        doctor = Patient.objects.filter(user=user, is_active=True, is_patient=True)
+ #       patient = Patient.objects.filter(user=user, is_active=True, is_patient=False)
+      #  doctor =  Poctor.objects.filter(user=user)
+        patient = Patient.objects.filter(user=user)
+       # if len(doctor) > 0:
+  #          if doctor[0].is_active:
+               # refresh = RefreshToken.for_user(user)
+               # return Response(
+              #      {
+             #           "refresh": str(refresh),
+            #            "access": str(refresh.access_token),
+           #             "user_id": user.id,
+          #              "is_patient": True,
+         #           }
+        #        )
+        if len(patient) > 0:
+   #         if patient[0].is_active:
                 refresh = RefreshToken.for_user(user)
                 return Response(
                     {
@@ -48,17 +61,6 @@ class PatientLoginView(APIView):
                         "access": str(refresh.access_token),
                         "user_id": user.id,
                         "is_patient": True,
-                    }
-                )
-        elif len(patient) > 0:
-            if patient[0].is_active:
-                refresh = RefreshToken.for_user(user)
-                return Response(
-                    {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                        "user_id": user.id,
-                        "is_patient": False,
                     }
                 )
         else:
@@ -91,6 +93,7 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
         Handle GET request for patient detail.
         """
+        
         patient = get_patient_from_token(request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient)
@@ -102,6 +105,7 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
         Get patient object.
         """
+        print("hiiii")
         patient = get_patient_from_token(self.request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient)
@@ -186,7 +190,7 @@ class PatientSessions(generics.RetrieveAPIView):
         Handle GET request for patient sessions.
         """
         patient = get_patient_from_token(request)
-        if isinstance(Patient, patient):
+        if  patient:
             sessions = Session.objects.filter(patient=patient)
             serializer = SessionSerializer(sessions, many=True)
             return Response(serializer.data)
@@ -219,6 +223,7 @@ def patient_profile(request):
 
     if request.method == "POST":
         serializer = PatientSerializer(patient, data=request.data, partial=True)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

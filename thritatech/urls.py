@@ -3,7 +3,8 @@ from django.urls import path, re_path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
+from django.conf import settings
+#from django.conf.urls.statics import static
 # jwt
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path("auth/", include("rest_framework.urls")),
+    path("api/auth/", include("rest_framework.urls")),
     # jwt
     path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
@@ -35,12 +36,12 @@ schema_view = get_schema_view(
 )
 
 urlpatterns += [
-    path("admin/", admin.site.urls),
-    path("doctor/", include("doctor.urls")),
-    path("exercise/", include("exercise.urls")),
-    path("patient/", include("patient.urls")),
-    path("prescription/", include("prescription.urls")),
-    path("reports/", include("reports.urls")),
+    path("api/admin/", admin.site.urls),
+    path("api/doctor/", include("doctor.urls")),
+    path("api/exercise/", include("exercise.urls")),
+    path("api/patient/", include("patient.urls")),
+    path("api/prescription/", include("prescription.urls")),
+    path("api/reports/", include("reports.urls")),
     path("session/", include("session.urls")),
     # path("prescription/", include("session.urls")),
     # Swagger documentation URL
@@ -56,3 +57,6 @@ urlpatterns += [
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]
+
+#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+#urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
