@@ -7,9 +7,12 @@ from exercise.serializers import ExerciseSerializer
 from patient.serializers import PatientSerializer, PatientLoginSerializer
 from patient.models import Patient
 from session.serializers import SessionSerializer
+from prescription.serializers import PrescriptionSerializer
 from session.models import Session
 from rest_framework.decorators import api_view
 from doctor.serializers import DoctorSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from utils.auth import (
     get_patient_from_token,
@@ -36,9 +39,13 @@ class PatientLoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
-        login(request, user)
+        # login(request, user)
 #        doctor = Patient.objects.filter(user=user, is_active=True, is_patient=True)
  #       patient = Patient.objects.filter(user=user, is_active=True, is_patient=False)
+        if not user:
+            return Response({
+                "error", "nemishe"
+            })
       #  doctor =  Poctor.objects.filter(user=user)
         patient = Patient.objects.filter(user=user)
        # if len(doctor) > 0:
@@ -105,7 +112,6 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
         """
         Get patient object.
         """
-        print("hiiii")
         patient = get_patient_from_token(self.request)
         if isinstance(patient, Patient):
             serializer = PatientSerializer(patient)
@@ -227,7 +233,7 @@ def patient_profile(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == "PATCH":
         return Response(
@@ -241,7 +247,7 @@ def patient_profile(request):
         )
 
 
-class PatientDoctorView(APIView):
+class PatientDoctorView(generics.RetrieveAPIView):
     """
     A view to retrieve the doctor associated with a patient.
 
@@ -257,3 +263,91 @@ class PatientDoctorView(APIView):
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
+
+from datetime import datetime
+class PatientSessions2(generics.ListAPIView):
+    """
+    API endpoint that returns all sessions for a specific date for a patient.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        date (str): The date for which sessions are to be retrieved.
+
+    Returns:
+        Response: A JSON response containing the serialized session data.
+    """
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
+    def get(self, request, *args, **kwargs):
+        patient = get_patient_from_token(request)
+        if isinstance(patient, Patient):
+            # Get start and end date from the GET request parameters
+            start_date_str = request.GET.get('start_date', None)
+            end_date_str = request.GET.get('end_date', None)
+            
+            if start_date_str and end_date_str:
+                try:
+                    # Convert start and end date strings to datetime objects
+                    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+                    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+                    # Filter sessions within the specified time period
+                    sessions = Session.objects.filter(
+                        patient=patient,
+                        date__range=[start_date, end_date]
+                    )
+                    serializer = SessionSerializer(sessions, many=True)
+                    return Response(serializer.data)
+                except ValueError:
+                    return Response({"error": "Invalid date format. Use 'YYYY-MM-DD'."}, status=400)
+            else:
+                return Response({"error": "Both start_date and end_date are required in the GET request."}, status=400)
+        else:
+            return Response({"error": "Permission denied"}, status=403)
+        
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def patient_session_exercises(request, session_id):
+
+    """
+    API view for retrieving exercises for all prescriptions in a specific session for a patient.
+
+    This view requires a valid patient token to be included in the request headers.
+    If the token is valid and belongs to the patient, it retrieves the session and returns
+    a JSON containing all prescriptions and their associated exercises.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        session_id (int): The ID of the session for which exercises are to be retrieved.
+
+    Returns:
+        Response: A JSON response containing the serialized prescription and exercise data.
+    """
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=401)
+
+    try:
+        # Retrieve the session for the given session_id
+        session = Session.objects.get(id=session_id, patient=patient)
+
+        # Get all prescriptions associated with the session
+        prescriptions = session.prescription.all()
+
+        # Serialize prescriptions along with their associated exercises
+        prescription_data = []
+        for prescription in prescriptions:
+            serializer = PrescriptionSerializer(prescription)
+            exercises_serializer = ExerciseSerializer(prescription.exercises.all(), many=True)
+            prescription_data.append({
+                "prescription": serializer.data,
+             #   "exercises": exercises_serializer.data,
+            })
+
+        return Response(prescription_data)
+    except Session.DoesNotExist:
+        return Response({"error": "Session not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

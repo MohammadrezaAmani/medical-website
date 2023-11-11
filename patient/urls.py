@@ -18,15 +18,22 @@ from . import views
 
 urlpatterns = [
     path(
-        "patient/exercises/",
+        "exercises/",
         views.PatientExercises.as_view(),
         name="patient-exercises",
     ),
     path(
-        "sessions/",
+        "session/",
         views.PatientSessions.as_view(),
         name="patient-sessions",
     ),
+    path(
+        "sessions/",
+        views.PatientSessions2.as_view(),
+        name="patient-sessions",
+    ),
+    path('session/<int:session_id>/exercises/', views.patient_session_exercises, name='patient_session_exercises'),
+
     path("login/", views.PatientLoginView.as_view(), name="patient-login"),
     # path("me/", views.PatientMe.as_view(), name="patient-me"),
     # pk

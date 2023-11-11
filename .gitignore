@@ -163,6 +163,7 @@ cython_debug/
 # custom
 images/
 videos/
+documents/
 documents/1.pdf
 documents/1_DXx3Bvk.pdf
 documents/1_1dyMipE.pdf

@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.response import Response
 from .models import (
     Equipment,
     Goal,
@@ -17,7 +18,7 @@ from .serializers import (
     OrganSerializer,
     ExerciseSerializer,
 )
-from utils.auth import get_doctor_from_token
+from utils.auth import get_doctor_from_token, get_patient_from_token
 
 
 class EquipmentListCreateView(generics.ListCreateAPIView):
@@ -28,6 +29,16 @@ class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     http_method_names = ["get"]
+
+    # def get_queryset(self,request):
+    #     patient = get_patient_from_token(request)
+    #     doctor = get_doctor_from_token(request)
+    #     if not (patient or doctor):
+    #         return Response({
+    #             'bad':'not logged in'
+    #         })
+    #     return
+
 
 
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):

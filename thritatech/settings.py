@@ -7,7 +7,7 @@ SECRET_KEY = "ct0m#--bsprfiv6dd+**#qqn37-=mzo!npq6&s8rl22m0_u(j3"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['media.actelmon.ir','130.185.75.178','back.actelmon.ir']
+ALLOWED_HOSTS = ['media.actelmon.ir','130.185.75.178','back.actelmon.ir','127.0.0.1','127.0.0.1:8000']
 
 INSTALLED_APPS = [
     "simpleui",
@@ -127,5 +127,5 @@ STATIC_URL = '/static/'
 #STATIC_ROOT = '/home/thrita/ThritaTech/static/'
 
 # Media files configuration
-MEDIA_URL = '/media/'
+MEDIA_URL = 'http://media.actelmon.ir/'
 #MEDIA_ROOT = '/home/thrita/ThritaTech/media/'

@@ -68,6 +68,13 @@ class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Prescription.objects.filter(patient=patient)
         else:
             return Prescription.objects.none()
+    
+    def get(self,):
+        print(self.request)
+        return self.get_queryset().filter(id=['pk'])
+    
+
+        
 
 
 # class DrugListCreateView(generics.ListCreateAPIView):

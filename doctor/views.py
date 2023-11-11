@@ -165,7 +165,7 @@ class DoctorPatientDetails(generics.RetrieveUpdateDestroyAPIView):
             raise Http404
 
 
-class DoctorMe(APIView):
+class DoctorMe(generics.RetrieveAPIView):
     """
     API endpoint that allows a doctor to retrieve their own details.
     """
@@ -183,7 +183,7 @@ class DoctorMe(APIView):
         return Response(serializer.data)
 
 
-class AddSession(APIView):
+class AddSession(generics.RetrieveAPIView):
     """
     API endpoint that allows a doctor to add a session.
     """
@@ -395,7 +395,7 @@ class DoctorExerciseDetails(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "permission denied"})
 
 
-class AddPatient(APIView):
+class AddPatient(generics.CreateAPIView):
     serializer_class = PatientSerializer
 
     def post(self, request):
@@ -413,7 +413,7 @@ class AddPatient(APIView):
             return Response({"error": "permission denied"})
 
 
-class AddExercise(APIView):
+class AddExercise(generics.CreateAPIView):
     """
     API endpoint to add a new exercise for a doctor.
 
@@ -456,7 +456,7 @@ class AddExercise(APIView):
             return Response({"error": "permission denied"})
 
 
-class SessionDate(APIView):
+class SessionDate(generics.RetrieveAPIView):
     """
     API endpoint that returns all sessions for a specific date for a doctor's patients.
 
@@ -481,7 +481,7 @@ class SessionDate(APIView):
         else:
             return Response({"error": "permission denied"})
 
-class AddPrescription(APIView):
+class AddPrescription(generics.CreateAPIView):
     serializer_class = PrescriptionSerializer
 
     def post(self, request):

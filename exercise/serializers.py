@@ -144,4 +144,4 @@ class ExerciseCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        exclude = "owner"
+        exclude =( "owner",)

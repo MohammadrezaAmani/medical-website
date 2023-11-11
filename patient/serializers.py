@@ -13,6 +13,7 @@ class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
         exclude = ["user"]
+        print("hi")
 
 #    def update(self, instance: Any, validated_data: Any) -> Any:
         """
