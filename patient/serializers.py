@@ -3,7 +3,9 @@ from rest_framework import serializers
 from patient.models import Patient
 from django.contrib.auth.models import User
 from .utils import random_password_generator
-
+from exercise.serializers import ExerciseSerializer
+from prescription.models import Prescription
+from session.models import Session
 
 class PatientSerializer(serializers.ModelSerializer):
     """
@@ -118,3 +120,18 @@ class PatientCreateSerializer(serializers.ModelSerializer):
             return patient
         except Exception as e:
             return {"error": str(e)}
+
+# In your patient/serializers.py
+class PrescriptionSerializer(serializers.ModelSerializer):
+    exercises = ExerciseSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Prescription
+        fields = ['id', 'exercises', 'repeat', 'sets', 'hold_time', 'total_time', 'rest_time']
+
+class SessionSerializer(serializers.ModelSerializer):
+    prescriptions = PrescriptionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Session
+        fields = ['id', 'patient', 'prescriptions', 'date', 'time', 'session_type', 'status', 'rate', 'description']

@@ -15,6 +15,12 @@ This module defines the following URL patterns:
 """
 from django.urls import path
 from . import views
+from .views import session_details
+from .views import create_prescription_report
+from .views import get_session_reports
+from .views import get_session_reports_with_detail
+from .views import get_last_k_sessions_reports
+from .views import combined_session_details
 
 urlpatterns = [
     path(
@@ -29,13 +35,18 @@ urlpatterns = [
     ),
     path(
         "sessions/",
-        views.PatientSessions2.as_view(),
-        name="patient-sessions",
+        combined_session_details,
+        name="combined_session_details",
     ),
     path('session/<int:session_id>/exercises/', views.patient_session_exercises, name='patient_session_exercises'),
+    path('session/<int:session_id>/', session_details, name='session_details'),
+    path('sessions/<int:session_id>/report/', create_prescription_report, name='create-prescription-report'),
+    path('sessions/<int:session_id>/reports/', get_session_reports, name='get-session-reports'),
+    path('sessions/detail/<int:session_id>/reports/',get_session_reports_with_detail, name='get_session_reports_with_detail'),
+    path('sessions/last/<int:k>/reports/', get_last_k_sessions_reports, name='get-last-k-sessions-reports'),
 
     path("login/", views.PatientLoginView.as_view(), name="patient-login"),
-    # path("me/", views.PatientMe.as_view(), name="patient-me"),
+    # path("me/", views.PatientMe.as_view(), name="patient-me"),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
     # pk
     path("profile/", views.patient_profile, name="patient-profile"),
 ]

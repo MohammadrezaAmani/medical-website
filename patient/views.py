@@ -13,6 +13,10 @@ from rest_framework.decorators import api_view
 from doctor.serializers import DoctorSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from reports.models import PrescriptionReport
+from reports.serializers import PrescriptionReportSerializer
+from reports.serializers import PrescriptionReportExtendedSerializer
+from session.serializers import SessionSerializerRate
 
 from utils.auth import (
     get_patient_from_token,
@@ -43,9 +47,9 @@ class PatientLoginView(APIView):
 #        doctor = Patient.objects.filter(user=user, is_active=True, is_patient=True)
  #       patient = Patient.objects.filter(user=user, is_active=True, is_patient=False)
         if not user:
-            return Response({
-                "error", "nemishe"
-            })
+            return Response(
+                "wrong_password", status=status.HTTP_403_FORBIDDEN
+            )
       #  doctor =  Poctor.objects.filter(user=user)
         patient = Patient.objects.filter(user=user)
        # if len(doctor) > 0:
@@ -55,7 +59,7 @@ class PatientLoginView(APIView):
               #      {
              #           "refresh": str(refresh),
             #            "access": str(refresh.access_token),
-           #             "user_id": user.id,
+           #             "user_id": user.id,g
           #              "is_patient": True,
          #           }
         #        )
@@ -351,3 +355,158 @@ def patient_session_exercises(request, session_id):
         return Response({"error": "Session not found"}, status=404)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def session_details(request, session_id):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=401)
+
+    try:
+        session = Session.objects.get(pk=session_id, patient=patient)
+        serializer = SessionSerializer(session)
+
+        # Calculate total time of each session
+        total_time = 0
+        for prescription in serializer.data['prescription']:
+            total_time += prescription['total_time']
+
+        # Get all unique accessories for a session
+        all_accessories = set()
+        for prescription in serializer.data['prescription']:
+            for exercise in prescription['exercises']:
+                accessories = exercise['accessories']
+                all_accessories.update(accessories)
+
+        return Response({
+            'total_time': total_time,
+            'all_accessories': list(all_accessories),
+            'session_details': serializer.data
+        })
+    except Session.DoesNotExist:
+        return Response({"error": "Session does not exist"}, status=404)
+    
+
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_prescription_report(request, session_id):
+    try:
+        session = Session.objects.get(pk=session_id)
+    except Session.DoesNotExist:
+        return Response({"error": "Session does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        report_data = request.data
+        for prescription_id, values in report_data.items():
+
+            try:
+                prescription = session.prescription.get(pk=prescription_id)
+            except prescription.DoesNotExist:
+                return Response({"error": f"Prescription with ID {prescription_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = PrescriptionReportSerializer(data=values)
+            if serializer.is_valid():
+                serializer.save(session=session, prescription=prescription)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"message": "Reports submitted successfully"}, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_session_reports_with_detail(request, session_id):
+    try:
+        session = Session.objects.get(pk=session_id)
+    except Session.DoesNotExist:
+        return Response({"error": "Session does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    reports = PrescriptionReport.objects.filter(session=session)
+    serializer = PrescriptionReportExtendedSerializer(reports, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_session_reports(request, session_id):
+    try:
+        session = Session.objects.get(pk=session_id)
+    except Session.DoesNotExist:
+        return Response({"error": "Session does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    reports = PrescriptionReport.objects.filter(session=session)
+    serializer = PrescriptionReportSerializer(reports, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_last_k_sessions_reports(request, k):
+    if not str(k).isdigit() or int(k) <= 0:
+        return Response({"error": "Invalid value for 'k'"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        patient = get_patient_from_token(request)
+        sessions = Session.objects.filter(patient=patient).order_by('-date', '-time')[:int(k)]
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+    reports = PrescriptionReport.objects.filter(session__in=sessions)
+    serializer = PrescriptionReportSerializer(reports, many=True)
+    return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def combined_session_details(request):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=401)
+
+    # Get start and end date from the GET request parameters
+    start_date_str = request.GET.get('start_date', None)
+    end_date_str = request.GET.get('end_date', None)
+
+    if start_date_str and end_date_str:
+        try:
+            # Convert start and end date strings to datetime objects
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+
+            # Filter sessions within the specified time period
+            sessions = Session.objects.filter(
+                patient=patient,
+                date__range=[start_date, end_date]
+            )
+
+            # Serialize sessions with more detail
+            serialized_sessions = []
+            for session in sessions:
+                serializer = SessionSerializer(session)
+
+                # Calculate total time of each session
+                total_time = 0
+                for prescription in serializer.data['prescription']:
+                    total_time += prescription['total_time']
+
+                # Get all unique accessories for a session
+                all_accessories = set()
+                for prescription in serializer.data['prescription']:
+                    for exercise in prescription['exercises']:
+                        accessories = exercise['accessories']
+                        all_accessories.update(accessories)
+
+                # Append detailed session data to the list
+                serialized_sessions.append({
+                    'total_time': total_time,
+                    'all_accessories': list(all_accessories),
+                    'session_details': serializer.data
+                })
+
+            return Response(serialized_sessions)
+
+        except ValueError:
+            return Response({"error": "Invalid date format. Use 'YYYY-MM-DD'."}, status=400)
+    else:
+        return Response({"error": "Both start_date and end_date are required in the GET request."}, status=400)
