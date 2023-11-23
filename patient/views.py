@@ -17,7 +17,8 @@ from reports.models import PrescriptionReport
 from reports.serializers import PrescriptionReportSerializer
 from reports.serializers import PrescriptionReportExtendedSerializer
 from session.serializers import SessionSerializerRate
-
+from doctor.models import Doctor
+from exercise.models import Equipment
 from utils.auth import (
     get_patient_from_token,
 )
@@ -485,23 +486,34 @@ def combined_session_details(request):
             for session in sessions:
                 serializer = SessionSerializer(session)
 
-                # Calculate total time of each session
                 total_time = 0
                 for prescription in serializer.data['prescription']:
                     total_time += prescription['total_time']
 
                 # Get all unique accessories for a session
-                all_accessories = set()
+
+                all_accessories = []
+                all_designer = []
                 for prescription in serializer.data['prescription']:
                     for exercise in prescription['exercises']:
                         accessories = exercise['accessories']
-                        all_accessories.update(accessories)
+                        owner = str(Doctor.objects.get(id = exercise['owner']))
+                        exercise['accessories'] = []
+                        if owner not in all_designer:
+                            all_designer.append(owner)
+                        for _id in accessories:
+                            asset = str(Equipment.objects.get(id = _id))
+                            if asset not in all_accessories:
+                                all_accessories.append(asset)
+                                exercise['accessories'].append(asset)
+                        
 
                 # Append detailed session data to the list
                 serialized_sessions.append({
-                    'total_time': total_time,
-                    'all_accessories': list(all_accessories),
-                    'session_details': serializer.data
+                'owner': all_designer[0] if all_designer else None,
+                'total_time': total_time,
+                'all_accessories': ', '.join(map(str, all_accessories)) if all_accessories else None,
+                'session_details': serializer.data
                 })
 
             return Response(serialized_sessions)
