@@ -26,7 +26,11 @@ class Session(models.Model):
     prescription = models.ManyToManyField(Prescription)
     date = models.DateField()
     time = models.TimeField()
-    session_type = models.CharField(max_length=100)
+    SESSION_TYPE=(
+        ("online", "online"),
+        ("offline", "offline"),
+    )
+    session_type = models.CharField(max_length=7, choices=SESSION_TYPE, null=True)
     SESSION_OPTION = (
         ("p", "pending"),
         ("c", "completed"),
@@ -34,6 +38,9 @@ class Session(models.Model):
     status = models.CharField(max_length=1, choices=SESSION_OPTION)
     rate = models.IntegerField()
     description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return "session"+" "+str(self.date)
 
     def get_absolute_url(self):
         return reverse("Session_detail", kwargs={"pk": self.pk})

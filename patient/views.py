@@ -53,6 +53,8 @@ class PatientLoginView(APIView):
             )
       #  doctor =  Poctor.objects.filter(user=user)
         patient = Patient.objects.filter(user=user)
+        serializer = PatientSerializer(patient[0])
+        print(serializer.data)
        # if len(doctor) > 0:
   #          if doctor[0].is_active:
                # refresh = RefreshToken.for_user(user)
@@ -73,6 +75,10 @@ class PatientLoginView(APIView):
                         "access": str(refresh.access_token),
                         "user_id": user.id,
                         "is_patient": True,
+                        "profile_img": serializer.data["photo"],
+                        "name": str(patient[0]),
+                        "support_phone_number":"+989154971975",
+                        "support_mail":"amirmasoud.sepehrian@gmail.com",
                     }
                 )
         else:
@@ -312,7 +318,7 @@ class PatientSessions2(generics.ListAPIView):
             return Response({"error": "Permission denied"}, status=403)
         
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def patient_session_exercises(request, session_id):
 
     """
@@ -332,7 +338,7 @@ def patient_session_exercises(request, session_id):
     patient = get_patient_from_token(request)
 
     if not patient:
-        return Response({"error": "Invalid token"}, status=401)
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
         # Retrieve the session for the given session_id
@@ -353,18 +359,18 @@ def patient_session_exercises(request, session_id):
 
         return Response(prescription_data)
     except Session.DoesNotExist:
-        return Response({"error": "Session not found"}, status=404)
+        return Response({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def session_details(request, session_id):
     patient = get_patient_from_token(request)
 
     if not patient:
-        return Response({"error": "Invalid token"}, status=401)
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
 
     try:
         session = Session.objects.get(pk=session_id, patient=patient)
@@ -393,8 +399,12 @@ def session_details(request, session_id):
 
     
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+##@permission_classes([IsAuthenticated])
 def create_prescription_report(request, session_id):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         session = Session.objects.get(pk=session_id)
     except Session.DoesNotExist:
@@ -418,8 +428,12 @@ def create_prescription_report(request, session_id):
         return Response({"message": "Reports submitted successfully"}, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_session_reports_with_detail(request, session_id):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         session = Session.objects.get(pk=session_id)
     except Session.DoesNotExist:
@@ -430,8 +444,12 @@ def get_session_reports_with_detail(request, session_id):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_session_reports(request, session_id):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         session = Session.objects.get(pk=session_id)
     except Session.DoesNotExist:
@@ -442,8 +460,12 @@ def get_session_reports(request, session_id):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_last_k_sessions_reports(request, k):
+    patient = get_patient_from_token(request)
+
+    if not patient:
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
     if not str(k).isdigit() or int(k) <= 0:
         return Response({"error": "Invalid value for 'k'"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -458,12 +480,12 @@ def get_last_k_sessions_reports(request, k):
     return Response(serializer.data)
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def combined_session_details(request):
     patient = get_patient_from_token(request)
-
+    print(patient)
     if not patient:
-        return Response({"error": "Invalid token"}, status=401)
+        return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
 
     # Get start and end date from the GET request parameters
     start_date_str = request.GET.get('start_date', None)

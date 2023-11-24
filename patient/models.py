@@ -66,7 +66,7 @@ class Patient(models.Model):
     weight = models.FloatField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name+" "+self.last_name
 
     def get_absolute_url(self):
         return reverse("Patient_detail", kwargs={"pk": self.pk})

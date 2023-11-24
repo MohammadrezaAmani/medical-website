@@ -72,6 +72,6 @@ def get_patient_from_token(request):
             patient = Patient.objects.get(user=user)
             return patient
         else:
-            return user
+            return None
     except Patient.DoesNotExist:
         return None
