@@ -410,22 +410,30 @@ def create_prescription_report(request, session_id):
     except Session.DoesNotExist:
         return Response({"error": "Session does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
+    
     if request.method == 'POST':
         report_data = request.data
+        repeats = []
         for prescription_id, values in report_data.items():
-
             try:
                 prescription = session.prescription.get(pk=prescription_id)
             except prescription.DoesNotExist:
                 return Response({"error": f"Prescription with ID {prescription_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
             serializer = PrescriptionReportSerializer(data=values)
+            repeats.append(values["repeats"])
             if serializer.is_valid():
                 serializer.save(session=session, prescription=prescription)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({"message": "Reports submitted successfully"}, status=status.HTTP_201_CREATED)
+        
+        session.status = 'c'
+        sum = 0
+        for rep in repeats:
+            sum += rep
+        session.rate = (sum / len(repeats))*100
+        session.save()
+        return Response({"message": "Reports submitted successfully"}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 #@permission_classes([IsAuthenticated])
@@ -454,7 +462,6 @@ def get_session_reports(request, session_id):
         session = Session.objects.get(pk=session_id)
     except Session.DoesNotExist:
         return Response({"error": "Session does not exist"}, status=status.HTTP_404_NOT_FOUND)
-
     reports = PrescriptionReport.objects.filter(session=session)
     serializer = PrescriptionReportSerializer(reports, many=True)
     return Response(serializer.data)

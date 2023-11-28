@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -124,8 +125,11 @@ SIMPLE_JWT = {
 
 # Static files configuration
 STATIC_URL = '/static/'
-#STATIC_ROOT = '/home/thrita/ThritaTech/static/'
+STATIC_ROOT = '/home/thrita/ThritaTech/static/'
 
 # Media files configuration
-MEDIA_URL = 'http://media.actelmon.ir/'
-#MEDIA_ROOT = '/home/thrita/ThritaTech/media/'
+# MEDIA_URL = 'http://back.actelmon.ir/'
+# MEDIA_ROOT = '/home/thrita/ThritaTech/'
+
+MEDIA_URL = 'http://back.actelmon.ir/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
