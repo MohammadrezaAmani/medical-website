@@ -6,6 +6,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "ct0m#--bsprfiv6dd+**#qqn37-=mzo!npq6&s8rl22m0_u(j3"
 
+# SESSION_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+# CSRF_COOKIE_SECURE = True
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['media.actelmon.ir','130.185.75.178','back.actelmon.ir','127.0.0.1','127.0.0.1:8000']

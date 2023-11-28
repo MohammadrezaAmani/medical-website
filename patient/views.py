@@ -233,29 +233,34 @@ def patient_profile(request):
 
     """
     patient = get_patient_from_token(request)
+    if isinstance(patient, Patient):
 
-    if request.method == "GET":
-        serializer = PatientSerializer(patient)
-        return Response(serializer.data)
-
-    if request.method == "POST":
-        serializer = PatientSerializer(patient, data=request.data, partial=True)
-        print(serializer)
-        if serializer.is_valid():
-            serializer.save()
+        if request.method == "GET":
+            serializer = PatientSerializer(patient)
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.method == "PATCH":
-        return Response(
-            {"error": "Use POST method to update your profile."},
-            status=status.HTTP_METHOD_NOT_ALLOWED,
-        )
-    if request.method == "DELETE":
-        patient.delete()
-        return Response(
-            {"message": "Profile deleted successfully."}, status=status.HTTP_200_OK
-        )
+        if request.method == "POST":
+            serializer = PatientSerializer(patient, data=request.data, partial=True)
+            print(serializer)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.method == "PATCH":
+            return Response(
+                {"error": "Use POST method to update your profile."},
+                status=status.HTTP_METHOD_NOT_ALLOWED,
+            )
+        if request.method == "DELETE":
+            patient.delete()
+            return Response(
+                {"message": "Profile deleted successfully."}, status=status.HTTP_200_OK
+            )
+    else:
+             return Response(
+                {"message": "permission deny."}, status=status.HTTP_403_FORBIDDEN
+            )
 
 
 class PatientDoctorView(generics.RetrieveAPIView):
