@@ -5,7 +5,8 @@ from django.urls import reverse
 User = get_user_model()
 
 
-class Doctor(User):
+class Doctor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     medical_system_code = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):

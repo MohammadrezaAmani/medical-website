@@ -8,14 +8,14 @@ from clinic.insurance.models import Insurance
 
 User = get_user_model()
 
-
 class PateintDoctor(models.Model):
     patient = models.ForeignKey("patient.Patient", on_delete=models.CASCADE)
     doctor = models.ForeignKey("doctor.Doctor", on_delete=models.CASCADE)
     injury = models.ManyToManyField(Injury)
 
 
-class Patient(User):
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     doctor = models.ManyToManyField(Doctor, through=PateintDoctor)
     medical_documents = models.FileField(
         upload_to="files/documents/", null=True, blank=True
