@@ -1,7 +1,6 @@
-from django.contrib.auth.models import AnonymousUser
-
 from app.testing import register
 from app.testing.types import FactoryProtocol
+from django.contrib.auth.models import AnonymousUser
 from users.models import User
 
 

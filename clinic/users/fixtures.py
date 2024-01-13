@@ -1,6 +1,6 @@
-import pytest
 from typing import TYPE_CHECKING
 
+import pytest
 from users.models import User
 
 if TYPE_CHECKING:

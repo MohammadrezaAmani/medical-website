@@ -1,5 +1,6 @@
-from clinic.prescription.api.serializers import PrescriptionSerializer
 from rest_framework import serializers
+
+from clinic.prescription.api.serializers import PrescriptionSerializer
 
 from ..models import Session
 

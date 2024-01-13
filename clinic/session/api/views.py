@@ -8,10 +8,11 @@ It provides two views:
 Both views use the Session model and the SessionSerializer to handle requests and responses.
 """
 
-from clinic.exercise.api.serializers import ExerciseSerializer
 from rest_framework import generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from clinic.exercise.api.serializers import ExerciseSerializer
 
 from ..models import Session
 from .serializers import SessionSerializer

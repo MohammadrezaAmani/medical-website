@@ -1,11 +1,12 @@
 from typing import Any
 
 from django.contrib.auth.models import User
-from clinic.exercise.api.serializers import ExerciseSerializer
 from patient.models import Patient
 from prescription.models import Prescription
 from rest_framework import serializers
 from session.models import Session
+
+from clinic.exercise.api.serializers import ExerciseSerializer
 
 from ..utils import random_password_generator
 

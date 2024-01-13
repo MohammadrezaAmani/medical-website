@@ -3,7 +3,6 @@ from django.urls import reverse
 
 
 class Equipment(models.Model):
-    
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -14,7 +13,6 @@ class Equipment(models.Model):
 
 
 class Goal(models.Model):
-
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -45,7 +43,6 @@ class PlacementPosition(models.Model):
 
 
 class Target(models.Model):
-
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
@@ -68,7 +65,6 @@ class Organ(models.Model):
 
 
 class Exercise(models.Model):
-
     owner = models.ForeignKey(
         "doctor.Doctor", on_delete=models.CASCADE, null=True, blank=True
     )

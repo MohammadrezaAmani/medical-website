@@ -6,7 +6,6 @@ from clinic.doctor.models import Doctor
 
 
 class Patient(models.Model):
-
     id = models.AutoField(primary_key=True)
     phone_number = models.CharField(max_length=11, unique=True)
     user = models.OneToOneField(

@@ -1,5 +1,6 @@
-from clinic.exercise.api.serializers import ExerciseSerializer
 from rest_framework import serializers
+
+from clinic.exercise.api.serializers import ExerciseSerializer
 
 from ..models import Prescription
 
