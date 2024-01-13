@@ -1,12 +1,13 @@
 from rest_framework import serializers
+
 from .models import (
-    Equipment,
-    Goal,
     Displacement,
+    Equipment,
+    Exercise,
+    Goal,
+    Organ,
     PlacementPosition,
     Target,
-    Organ,
-    Exercise,
 )
 
 
@@ -144,4 +145,4 @@ class ExerciseCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        exclude =( "owner",)
+        exclude = ("owner",)

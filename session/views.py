@@ -9,11 +9,13 @@ Both views use the Session model and the SessionSerializer to handle requests an
 """
 
 from rest_framework import generics
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from exercise.serializers import ExerciseSerializer
+
 from .models import Session
 from .serializers import SessionSerializer
-from exercise.serializers import ExerciseSerializer
-from rest_framework.response import Response
-from rest_framework.decorators import action
 
 
 class SessionListCreateView(generics.ListCreateAPIView):
@@ -40,10 +42,12 @@ class SessionDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
-    
-    @action(detail=True, methods=['get'])
+
+    @action(detail=True, methods=["get"])
     def get_session_exercises(self, request, pk=None):
         session = self.get_object()
-        exercises = session.prescription.first().exercises.all()  # Assuming a session has one prescription
+        exercises = (
+            session.prescription.first().exercises.all()
+        )  # Assuming a session has one prescription
         serializer = ExerciseSerializer(exercises, many=True)
         return Response(serializer.data)

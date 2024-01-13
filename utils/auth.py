@@ -1,7 +1,8 @@
 import jwt
 from django.conf import settings
-from django.http import JsonResponse
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+
 from doctor.models import Doctor
 from patient.models import Patient
 

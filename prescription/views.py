@@ -3,13 +3,14 @@ from rest_framework import generics
 
 from doctor.models import Doctor
 from patient.models import Patient
-from .models import Prescription
-from .serializers import PrescriptionSerializer
 from utils.auth import (
     get_doctor_from_token,
-    get_user_from_token,
     get_patient_from_token,
+    get_user_from_token,
 )
+
+from .models import Prescription
+from .serializers import PrescriptionSerializer
 
 
 class PrescriptionListCreateView(generics.ListCreateAPIView):
@@ -68,13 +69,12 @@ class PrescriptionDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Prescription.objects.filter(patient=patient)
         else:
             return Prescription.objects.none()
-    
-    def get(self,):
-        print(self.request)
-        return self.get_queryset().filter(id=['pk'])
-    
 
-        
+    def get(
+        self,
+    ):
+        print(self.request)
+        return self.get_queryset().filter(id=["pk"])
 
 
 # class DrugListCreateView(generics.ListCreateAPIView):

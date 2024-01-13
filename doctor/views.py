@@ -1,24 +1,24 @@
-from django.http import Http404
 from django.contrib.auth import authenticate
-from rest_framework import status, generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from exercise.serializers import ExerciseSerializer, ExerciseCreateSerializer
+
 from exercise.models import Exercise
-from patient.serializers import PatientSerializer, PatientCreateSerializer
+from exercise.serializers import ExerciseCreateSerializer, ExerciseSerializer
 from patient.models import Patient
-from session.serializers import SessionSerializer
-from session.models import Session
+from patient.serializers import PatientCreateSerializer, PatientSerializer
 from prescription.models import Prescription
 from prescription.serializers import PrescriptionSerializer
-from utils.auth import (
-    get_doctor_from_token,
-)
-from .serializers import DoctorLoginSerializer, DoctorSerializer
+from session.models import Session
+from session.serializers import SessionSerializer
+from utils.auth import get_doctor_from_token
+
 from .models import Doctor
+from .serializers import DoctorLoginSerializer, DoctorSerializer
 
 
 class DoctorLoginView(APIView):
@@ -405,8 +405,10 @@ class AddPatient(generics.CreateAPIView):
             serializer = PatientCreateSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                patient = Patient.objects.get(phone_number=serializer.data["phone_number"])
-                print(patient,'-----------------------')
+                patient = Patient.objects.get(
+                    phone_number=serializer.data["phone_number"]
+                )
+                print(patient, "-----------------------")
                 return Response(PatientSerializer(patient).data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -480,6 +482,7 @@ class SessionDate(generics.RetrieveAPIView):
             return Response(serializer.data)
         else:
             return Response({"error": "permission denied"})
+
 
 class AddPrescription(generics.CreateAPIView):
     serializer_class = PrescriptionSerializer
@@ -557,7 +560,9 @@ class DoctorPrescriptionDetails(generics.RetrieveUpdateDestroyAPIView):
             return doctor
         if isinstance(doctor, Doctor):
             prescription = Prescription.objects.get(id=kwargs["pk"])
-            serializer = PrescriptionSerializer(prescription, data=request.data, partial=True)
+            serializer = PrescriptionSerializer(
+                prescription, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

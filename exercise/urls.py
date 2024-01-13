@@ -24,20 +24,21 @@ This module defines the following URL patterns:
 """
 
 from django.urls import path
+
 from .views import (
-    EquipmentListCreateView,
-    EquipmentDetailView,
-    GoalListCreateView,
-    GoalDetailView,
-    DisplacementListCreateView,
     DisplacementDetailView,
-    PlacementPositionListCreateView,
-    PlacementPositionDetailView,
-    TargetListCreateView,
-    TargetDetailView,
-    OrganListCreateView,
-    OrganDetailView,
+    DisplacementListCreateView,
+    EquipmentDetailView,
+    EquipmentListCreateView,
     ExerciseListView,
+    GoalDetailView,
+    GoalListCreateView,
+    OrganDetailView,
+    OrganListCreateView,
+    PlacementPositionDetailView,
+    PlacementPositionListCreateView,
+    TargetDetailView,
+    TargetListCreateView,
 )
 
 urlpatterns = [

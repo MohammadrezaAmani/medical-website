@@ -1,11 +1,14 @@
 # serializers.py
 from rest_framework import serializers
+
 from .models import PrescriptionReport
+
 
 class PrescriptionReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrescriptionReport
-        fields = ['prescription_id','pain_level', 'repeats', 'hardness_present']
+        fields = ["prescription_id", "pain_level", "repeats", "hardness_present"]
+
 
 class PrescriptionReportExtendedSerializer(serializers.ModelSerializer):
     """
@@ -19,7 +22,17 @@ class PrescriptionReportExtendedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PrescriptionReport
-        fields = ['id', 'repeats', 'pain_level', 'hardness_present', 'additional_notes', 'prescription_id', 'exercise_details', 'session_date', 'session_id']
+        fields = [
+            "id",
+            "repeats",
+            "pain_level",
+            "hardness_present",
+            "additional_notes",
+            "prescription_id",
+            "exercise_details",
+            "session_date",
+            "session_id",
+        ]
 
     def get_prescription_id(self, obj):
         return obj.prescription.id
@@ -29,4 +42,3 @@ class PrescriptionReportExtendedSerializer(serializers.ModelSerializer):
 
     def get_session_date(self, obj):
         return obj.session.date
-

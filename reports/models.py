@@ -1,7 +1,8 @@
-
 from django.db import models
+
 from prescription.models import Prescription
 from session.models import Session
+
 
 class PrescriptionReport(models.Model):
     """
@@ -27,4 +28,3 @@ class PrescriptionReport(models.Model):
 
     def __str__(self):
         return f"Report for Prescription {self.prescription.id} in Session {self.session.id}"
- 

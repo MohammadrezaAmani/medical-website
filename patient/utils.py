@@ -1,5 +1,5 @@
-import string
 import secrets
+import string
 
 
 def random_password_generator():

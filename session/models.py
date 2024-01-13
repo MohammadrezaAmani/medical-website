@@ -1,8 +1,8 @@
 from django.db import models
-from prescription.models import Prescription
-from patient.models import Patient
-
 from django.urls import reverse
+
+from patient.models import Patient
+from prescription.models import Prescription
 
 
 class Session(models.Model):
@@ -26,7 +26,7 @@ class Session(models.Model):
     prescription = models.ManyToManyField(Prescription)
     date = models.DateField()
     time = models.TimeField()
-    SESSION_TYPE=(
+    SESSION_TYPE = (
         ("online", "online"),
         ("offline", "offline"),
     )
@@ -40,7 +40,7 @@ class Session(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return "session"+" "+str(self.date)
+        return "session" + " " + str(self.date)
 
     def get_absolute_url(self):
         return reverse("Session_detail", kwargs={"pk": self.pk})

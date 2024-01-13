@@ -1,24 +1,25 @@
 from rest_framework import generics
-from rest_framework.response import Response
+
+from utils.auth import get_doctor_from_token
+
 from .models import (
-    Equipment,
-    Goal,
     Displacement,
+    Equipment,
+    Exercise,
+    Goal,
+    Organ,
     PlacementPosition,
     Target,
-    Organ,
-    Exercise,
 )
 from .serializers import (
-    EquipmentSerializer,
-    GoalSerializer,
     DisplacementSerializer,
+    EquipmentSerializer,
+    ExerciseSerializer,
+    GoalSerializer,
+    OrganSerializer,
     PlacementPositionSerializer,
     TargetSerializer,
-    OrganSerializer,
-    ExerciseSerializer,
 )
-from utils.auth import get_doctor_from_token, get_patient_from_token
 
 
 class EquipmentListCreateView(generics.ListCreateAPIView):
@@ -38,7 +39,6 @@ class EquipmentListCreateView(generics.ListCreateAPIView):
     #             'bad':'not logged in'
     #         })
     #     return
-
 
 
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):

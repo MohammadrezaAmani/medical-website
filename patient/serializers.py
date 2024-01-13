@@ -1,11 +1,15 @@
 from typing import Any
-from rest_framework import serializers
-from patient.models import Patient
+
 from django.contrib.auth.models import User
-from .utils import random_password_generator
+from rest_framework import serializers
+
 from exercise.serializers import ExerciseSerializer
+from patient.models import Patient
 from prescription.models import Prescription
 from session.models import Session
+
+from .utils import random_password_generator
+
 
 class PatientSerializer(serializers.ModelSerializer):
     """
@@ -17,7 +21,7 @@ class PatientSerializer(serializers.ModelSerializer):
         exclude = ["user"]
         print("hi")
 
-#    def update(self, instance: Any, validated_data: Any) -> Any:
+        #    def update(self, instance: Any, validated_data: Any) -> Any:
         """
         Update the patient instance with the validated data.
 
@@ -28,16 +32,18 @@ class PatientSerializer(serializers.ModelSerializer):
         Returns:
             Any: The updated patient instance.
         """
-        #print(instance.id)
- #       patient = Patient.objects.filter(id=instance.id)
-        
-  #      print(type(patient))
-        #user = patient.user
-        #if "email" in validated_data:
-         #   user.email = validated_data["email"]
-   #     patient.save()
-        #user.save()
-    #    return patient
+        # print(instance.id)
+
+
+#       patient = Patient.objects.filter(id=instance.id)
+
+#      print(type(patient))
+# user = patient.user
+# if "email" in validated_data:
+#   user.email = validated_data["email"]
+#     patient.save()
+# user.save()
+#    return patient
 
 
 class PatientLoginSerializer(serializers.Serializer):
@@ -79,9 +85,11 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         """
         print(validated_data["phone_number"])
         try:
-            if Patient.objects.filter(phone_number=validated_data["phone_number"]).exists():
-                return {"error":"Patient with this phone number already exists"}
-            print('USER CREATED')
+            if Patient.objects.filter(
+                phone_number=validated_data["phone_number"]
+            ).exists():
+                return {"error": "Patient with this phone number already exists"}
+            print("USER CREATED")
             patient = Patient.objects.create(**validated_data)
             username = patient.phone_number
             password = random_password_generator()
@@ -121,17 +129,37 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         except Exception as e:
             return {"error": str(e)}
 
+
 # In your patient/serializers.py
 class PrescriptionSerializer(serializers.ModelSerializer):
     exercises = ExerciseSerializer(many=True, read_only=True)
 
     class Meta:
         model = Prescription
-        fields = ['id', 'exercises', 'repeat', 'sets', 'hold_time', 'total_time', 'rest_time']
+        fields = [
+            "id",
+            "exercises",
+            "repeat",
+            "sets",
+            "hold_time",
+            "total_time",
+            "rest_time",
+        ]
+
 
 class SessionSerializer(serializers.ModelSerializer):
     prescriptions = PrescriptionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Session
-        fields = ['id', 'patient', 'prescriptions', 'date', 'time', 'session_type', 'status', 'rate', 'description']
+        fields = [
+            "id",
+            "patient",
+            "prescriptions",
+            "date",
+            "time",
+            "session_type",
+            "status",
+            "rate",
+            "description",
+        ]

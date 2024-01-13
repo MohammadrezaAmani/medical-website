@@ -1,6 +1,6 @@
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,7 +12,13 @@ SECRET_KEY = "ct0m#--bsprfiv6dd+**#qqn37-=mzo!npq6&s8rl22m0_u(j3"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['media.actelmon.ir','130.185.75.178','back.actelmon.ir','127.0.0.1','127.0.0.1:8000']
+ALLOWED_HOSTS = [
+    "media.actelmon.ir",
+    "130.185.75.178",
+    "back.actelmon.ir",
+    "127.0.0.1",
+    "127.0.0.1:8000",
+]
 
 INSTALLED_APPS = [
     "simpleui",
@@ -128,12 +134,12 @@ SIMPLE_JWT = {
 
 
 # Static files configuration
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home/thrita/ThritaTech/static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = "/home/thrita/ThritaTech/static/"
 
 # Media files configuration
 # MEDIA_URL = 'http://back.actelmon.ir/'
 # MEDIA_ROOT = '/home/thrita/ThritaTech/'
 
-MEDIA_URL = 'http://back.actelmon.ir/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "http://back.actelmon.ir/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
