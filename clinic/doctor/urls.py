@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from .api import views
 
 urlpatterns = [
     path("profile/", views.doctor_profile, name="patient-profile"),

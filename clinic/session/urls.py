@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import SessionDetailView, SessionListCreateView
+from .api.views import SessionDetailView, SessionListCreateView
 
 urlpatterns = [
     path("sessions/", SessionListCreateView.as_view(), name="session-list"),

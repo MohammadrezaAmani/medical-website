@@ -15,8 +15,8 @@ This module defines the following URL patterns:
 """
 from django.urls import path
 
-from . import views
-from .views import (
+from .api import views
+from .api.views import (
     combined_session_details,
     create_prescription_report,
     get_last_k_sessions_reports,

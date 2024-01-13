@@ -1,7 +1,7 @@
 from rest_framework import generics
 from utils.auth import get_doctor_from_token
 
-from .models import (
+from ..models import (
     Displacement,
     Equipment,
     Exercise,

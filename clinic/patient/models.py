@@ -6,33 +6,6 @@ from clinic.doctor.models import Doctor
 
 
 class Patient(models.Model):
-    """
-    A model representing a patient in the system.
-
-    Attributes:
-        id (int): The unique identifier for the patient.
-        user (User): The user associated with the patient.
-        doctor (Doctor): The doctor associated with the patient.
-        password (str): The password for the patient.
-        name (str): The first name of the patient.
-        last_name (str): The last name of the patient.
-        email (str): The email address of the patient.
-        photo (ImageField): The profile picture of the patient.
-        bio (str): The bio of the patient.
-        gender (str): The gender of the patient.
-        birth_date (date): The birth date of the patient.
-        address (str): The address of the patient.
-        phone_number (str): The phone number of the patient.
-        insurance_number (str): The insurance number of the patient.
-        insurance_company (str): The insurance company of the patient.
-        injury_date (date): The date of injury of the patient.
-        injury_description (str): The description of the injury of the patient.
-        injury_type (str): The type of injury of the patient.
-        medical_documents (FileField): The medical documents of the patient.
-        blood_type (str): The blood type of the patient.
-        height (float): The height of the patient.
-        weight (float): The weight of the patient.
-    """
 
     id = models.AutoField(primary_key=True)
     phone_number = models.CharField(max_length=11, unique=True)

@@ -2,14 +2,14 @@ from datetime import datetime
 
 from django.contrib.auth import authenticate
 from doctor.models import Doctor
-from doctor.serializers import DoctorSerializer
+from clinic.doctor.api.serializers import DoctorSerializer
 from exercise.models import Equipment
-from exercise.serializers import ExerciseSerializer
+from clinic.exercise.api.serializers import ExerciseSerializer
 from patient.models import Patient
-from patient.serializers import PatientLoginSerializer, PatientSerializer
-from prescription.serializers import PrescriptionSerializer
+from clinic.patient.api.serializers import PatientLoginSerializer, PatientSerializer
+from clinic.prescription.api.serializers import PrescriptionSerializer
 from reports.models import PrescriptionReport
-from reports.serializers import (
+from clinic.reports.api.serializers import (
     PrescriptionReportExtendedSerializer,
     PrescriptionReportSerializer,
 )
@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from session.models import Session
-from session.serializers import SessionSerializer
+from clinic.session.api.serializers import SessionSerializer
 from utils.auth import get_patient_from_token
 
 

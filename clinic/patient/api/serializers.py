@@ -1,13 +1,13 @@
 from typing import Any
 
 from django.contrib.auth.models import User
-from exercise.serializers import ExerciseSerializer
+from clinic.exercise.api.serializers import ExerciseSerializer
 from patient.models import Patient
 from prescription.models import Prescription
 from rest_framework import serializers
 from session.models import Session
 
-from .utils import random_password_generator
+from ..utils import random_password_generator
 
 
 class PatientSerializer(serializers.ModelSerializer):

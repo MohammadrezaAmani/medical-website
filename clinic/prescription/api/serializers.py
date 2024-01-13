@@ -1,7 +1,7 @@
-from exercise.serializers import ExerciseSerializer
+from clinic.exercise.api.serializers import ExerciseSerializer
 from rest_framework import serializers
 
-from .models import Prescription
+from ..models import Prescription
 
 # class DrugSerializer(serializers.ModelSerializer):
 #     """

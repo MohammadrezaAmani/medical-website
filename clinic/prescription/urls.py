@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (  # DrugListCreateView,; DrugDetailView,
+from .api.views import (  # DrugListCreateView,; DrugDetailView,
     PrescriptionDetailView,
     PrescriptionListCreateView,
 )

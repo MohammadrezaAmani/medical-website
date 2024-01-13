@@ -1,7 +1,7 @@
 # serializers.py
 from rest_framework import serializers
 
-from .models import PrescriptionReport
+from ..models import PrescriptionReport
 
 
 class PrescriptionReportSerializer(serializers.ModelSerializer):

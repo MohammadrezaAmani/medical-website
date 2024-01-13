@@ -25,7 +25,7 @@ This module defines the following URL patterns:
 
 from django.urls import path
 
-from .views import (
+from .api.views import (
     DisplacementDetailView,
     DisplacementListCreateView,
     EquipmentDetailView,

@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate
 from django.http import Http404
 from exercise.models import Exercise
-from exercise.serializers import ExerciseCreateSerializer, ExerciseSerializer
+from clinic.exercise.api.serializers import ExerciseCreateSerializer, ExerciseSerializer
 from patient.models import Patient
-from patient.serializers import PatientCreateSerializer, PatientSerializer
+from clinic.patient.api.serializers import PatientCreateSerializer, PatientSerializer
 from prescription.models import Prescription
-from prescription.serializers import PrescriptionSerializer
+from clinic.prescription.api.serializers import PrescriptionSerializer
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
@@ -13,10 +13,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from session.models import Session
-from session.serializers import SessionSerializer
+from clinic.session.api.serializers import SessionSerializer
 from utils.auth import get_doctor_from_token
 
-from .models import Doctor
+from ..models import Doctor
 from .serializers import DoctorLoginSerializer, DoctorSerializer
 
 

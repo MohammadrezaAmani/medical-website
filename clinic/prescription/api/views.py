@@ -8,7 +8,7 @@ from utils.auth import (
     get_user_from_token,
 )
 
-from .models import Prescription
+from ..models import Prescription
 from .serializers import PrescriptionSerializer
 
 
