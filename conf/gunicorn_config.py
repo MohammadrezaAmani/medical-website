@@ -11,10 +11,10 @@ bind = "0.0.0.0:8000"
 workers = multiprocessing.cpu_count() * 2 + 1
 
 # Directory where Gunicorn should find your Django project's WSGI application
-chdir = "/home/thrita/ThritaTech"
+chdir = "/home/thrita/clinic"
 
 # WSGI module name
-module = "thritatech.wsgi:application"
+module = "clinic.wsgi:application"
 
 # Enable the master process to restart workers
 reload = True

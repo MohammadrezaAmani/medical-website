@@ -1,1 +1,1 @@
-# ThritaTech
+# clinic
