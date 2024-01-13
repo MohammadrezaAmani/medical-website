@@ -8,6 +8,7 @@ from clinic.insurance.models import Insurance
 
 User = get_user_model()
 
+
 class PateintDoctor(models.Model):
     patient = models.ForeignKey("patient.Patient", on_delete=models.CASCADE)
     doctor = models.ForeignKey("doctor.Doctor", on_delete=models.CASCADE)

@@ -46,7 +46,7 @@ LOCAL_APPS = [
     "clinic.session",
     "clinic.injury",
     "clinic.insurance",
-    "clinic.baseuser"
+    "clinic.baseuser",
 ]
 
 INSTALLED_APPS = [*DJANGO_APPS, *THIRD_PARTY_APPS, *LOCAL_APPS]
@@ -117,7 +117,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'baseuser.CustomUser'
+AUTH_USER_MODEL = "baseuser.CustomUser"
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
