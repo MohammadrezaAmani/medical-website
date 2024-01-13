@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 
 
@@ -20,7 +18,7 @@ class Doctor(models.Model):
     GENDER_OPTIONS = (("m", "Male"), ("f", "Female"))
     name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
-    photo = models.ImageField(upload_to="images/", null=True, blank=True)
+    photo = models.ImageField(upload_to="media/images/", null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENDER_OPTIONS, default="m")
     birth_date = models.DateField(null=True, blank=True)
@@ -34,19 +32,3 @@ class Doctor(models.Model):
 
     def get_absolute_url(self):
         return reverse("Doctor_detail", kwargs={"pk": self.pk})
-
-
-@receiver(post_save, sender=Doctor)
-def create_user(sender, instance, created, **kwargs):
-    if created:
-        user = User.objects.create(username=instance.username, email=instance.email)
-        user.set_password(instance.password)
-        instance.user = user
-        instance.user.save()
-        instance.save()
-    else:
-        instance.user.username = instance.username
-        instance.user.set_password(instance.password)
-        print(instance.user.password)
-        instance.user.email = instance.email
-        instance.user.save()
