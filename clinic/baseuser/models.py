@@ -14,25 +14,21 @@ class BaseUser(models.Model):
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
-        # Implement your custom user creation logic here
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, username, email, password=None, **extra_fields):
-        # Implement your custom superuser creation logic here
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(username, email, password, **extra_fields)
 
 class CustomUser(BaseUser, AbstractUser):
-    # Additional fields for the advanced user model
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
 
-    # Use unique related_name arguments to avoid clashes with auth.User
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='customuser_set',
@@ -51,5 +47,4 @@ class CustomUser(BaseUser, AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
-        # Add any additional meta options for your advanced user model
         pass
