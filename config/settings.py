@@ -34,8 +34,8 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "rest_framework_simplejwt",
-    "django_extensions",
 ]
+ 
 
 LOCAL_APPS = [
     "clinic.doctor",
@@ -142,3 +142,8 @@ SIMPLE_JWT = {
 }
 
 STATIC_URL = "/static/"
+
+
+if DEBUG:
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware",]
+    INSTALLED_APPS += ["django_extensions", "debug_toolbar"]

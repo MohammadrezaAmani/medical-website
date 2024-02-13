@@ -3,7 +3,7 @@ from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-
+from django.conf import settings
 # jwt
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -51,5 +51,9 @@ urlpatterns += [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]
 
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
 # Add a URL pattern for serving video files
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
