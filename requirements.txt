@@ -3,7 +3,7 @@ Django==5.0.2
 django-cors-headers==4.3.1
 django-debug-toolbar==4.3.0
 django-extensions==3.2.3
-django-simpleui==2023.12.12
+django-filter==23.5
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 drf-yasg==1.21.7
