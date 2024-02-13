@@ -38,12 +38,12 @@ THIRD_PARTY_APPS = [
 
 
 LOCAL_APPS = [
-    "clinic.doctor",
-    "clinic.patient",
-    "clinic.exercise",
-    "clinic.prescription",
-    "clinic.reports",
-    "clinic.session",
+    # "clinic.doctor",
+    # "clinic.patient",
+    # "clinic.exercise",
+    # "clinic.prescription",
+    # "clinic.reports",
+    # "clinic.session",
     "clinic.injury",
     "clinic.insurance",
     "clinic.users",
@@ -130,6 +130,8 @@ SWAGGER_SETTINGS = {
 }
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        # "rest_framework.authentication.BasicAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",

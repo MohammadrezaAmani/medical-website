@@ -1,5 +1,11 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission
 from django.db import models
+from django.urls import reverse
+
+from clinic.injury.models import Injury
+from clinic.insurance.models import Insurance
+
+# make password
 
 
 class BaseUser(models.Model):
@@ -51,3 +57,47 @@ class CustomUser(BaseUser, AbstractUser):
 
     class Meta:
         pass
+
+
+class Doctor(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, blank=True, null=True
+    )
+    medical_system_code = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.pk} | {self.user.first_name} {self.user.last_name}"
+
+    def get_absolute_url(self):
+        return reverse("doctor_detail", kwargs={"pk": self.pk})
+
+
+class PateintDoctor(models.Model):
+    patient = models.ForeignKey("Patient", on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    injury = models.ManyToManyField(Injury, blank=True)
+
+    def __str__(self):
+        return f"{self.patient.user.first_name} {self.patient.user.last_name} | {self.doctor.user.first_name} {self.doctor.user.last_name}"
+
+
+class Patient(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, blank=True, null=True
+    )
+    doctor = models.ManyToManyField(Doctor, through=PateintDoctor)
+    medical_documents = models.FileField(
+        upload_to="files/documents/", null=True, blank=True
+    )
+    blood_type = models.CharField(max_length=10, null=True, blank=True)
+    height = models.FloatField(null=True, blank=True)
+    weight = models.FloatField(null=True, blank=True)
+    insurance = models.ForeignKey(
+        Insurance, on_delete=models.CASCADE, null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"{self.user.pk} | {self.user.first_name} {self.user.last_name}"
+
+    def get_absolute_url(self):
+        return reverse("patient_detail", kwargs={"pk": self.pk})

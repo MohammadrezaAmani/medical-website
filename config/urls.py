@@ -8,6 +8,8 @@ from rest_framework import permissions
 # jwt
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from .api_router import router
+
 schema_view = get_schema_view(
     openapi.Info(
         title="clinic API",
@@ -24,12 +26,13 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("api/auth/", include("rest_framework.urls")),
     path("api/v2/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/vص/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v2/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 
 
 urlpatterns += [
     path("api/admin/", admin.site.urls),
+    path("api/", include(router.urls)),
     # path("api/doctor/", include("doctor.urls")),
     # path("api/exercise/", include("exercise.urls")),
     # path("api/patient/", include("patient.urls")),
