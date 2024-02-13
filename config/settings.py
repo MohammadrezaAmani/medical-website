@@ -35,7 +35,7 @@ THIRD_PARTY_APPS = [
     "drf_yasg",
     "rest_framework_simplejwt",
 ]
- 
+
 
 LOCAL_APPS = [
     "clinic.doctor",
@@ -46,7 +46,7 @@ LOCAL_APPS = [
     "clinic.session",
     "clinic.injury",
     "clinic.insurance",
-    "clinic.baseuser",
+    "clinic.users",
 ]
 
 INSTALLED_APPS = [*DJANGO_APPS, *THIRD_PARTY_APPS, *LOCAL_APPS]
@@ -117,7 +117,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "baseuser.CustomUser"
+AUTH_USER_MODEL = "users.CustomUser"
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
@@ -145,5 +145,7 @@ STATIC_URL = "/static/"
 
 
 if DEBUG:
-    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware",]
+    MIDDLEWARE += [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ]
     INSTALLED_APPS += ["django_extensions", "debug_toolbar"]

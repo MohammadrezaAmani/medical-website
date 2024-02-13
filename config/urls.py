@@ -1,18 +1,18 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
-from django.conf import settings
+
 # jwt
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 schema_view = get_schema_view(
     openapi.Info(
         title="clinic API",
-        default_version="v3.2.6",
-        description="Nothing",
-        terms_of_service="https://www.yourapp.com/terms/",
+        default_version="v24.2.13",
+        description="These api sets are developed for a medical website, which you can read in more detail below",
         contact=openapi.Contact(email="More.amani@yahoo.com"),
         license=openapi.License(name="MIT"),
     ),
@@ -23,9 +23,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("api/auth/", include("rest_framework.urls")),
-    # jwt
-    path("api/v1/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/v2/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/vص/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 
 
